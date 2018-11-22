@@ -14,6 +14,7 @@ class Login:
         self.req = requests.session()
         self.phoneNo = phoneNo
         self.password = password
+        self.encryptPassword = self.dxPwdEncrypt(password).strip()
         self.provinceID = ''
         self.EcsLoginToken = ''
         self.png = ''
@@ -115,7 +116,7 @@ class Login:
             'AreaCode': '',
             'CityNo': '',
             'RandomFlag': '0',
-            'Password': self.dxPwdEncrypt(self.password).strip(),
+            'Password': self.encryptPassword,
             'Captcha': captcha
         }
         try:
@@ -212,8 +213,7 @@ def save_file(path, file_name, data):
 
 
 if __name__ == '__main__':
-    # print(dxPwdEncrypt(915275))
-    # dx = Login('19948715071', '915275')
+    # dx = login('19948715071', '915275')
     dx = Login('17731120253', '436635')
     errorCode = ""
     count = 0

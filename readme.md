@@ -10,3 +10,14 @@ brew install pytesseract
 
 
 add pyv8-p3 to python3 site-packages
+
+
+python3 manage.py migrate
+python3 manage.py makemigrations telecom
+python3 manage.py migrate telecom
+
+python3 manage.py createsuperuser
+
+python3 manage.py runserver 0.0.0.0:8000
+
+
