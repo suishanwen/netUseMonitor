@@ -10,11 +10,32 @@ def hello(request):
     return render(request, 'hello.html', context)
 
 
+def search(request):
+    return render(request, 'search.html')
+
+
 # 数据库操作
 def add(request):
-    card = Card(phone='17731120253', password='436635', net='')
+    return render(request, 'add.html')
+
+
+def addCard(request):
+    request.encoding = 'utf-8'
+    phone = ''
+    password = ''
+    icc_id = ''
+    user = ''
+    if 'phone' in request.GET:
+        phone = request.GET['phone']
+    if 'password' in request.GET:
+        password = request.GET['password']
+    if 'icc_id' in request.GET:
+        icc_id = request.GET['icc_id']
+    if 'user' in request.GET:
+        user = request.GET['user']
+    card = Card(phone=phone, password=password, icc_id=icc_id, user=user)
     card.save()
-    return HttpResponse("<p>数据添加成功！</p>")
+    return query(request)
 
 
 def update(request):
@@ -34,8 +55,8 @@ def update(request):
 
 def delete(request):
     # 删除id=1的数据
-    test1 = Card.objects.get(id=1)
-    test1.delete()
+    list = Card.objects.all()
+    list.delete()
 
     # 另外一种方式
     # Test.objects.filter(id=1).delete()
