@@ -2,15 +2,53 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>菜鸟教程(runoob.com)</title>
+    <title>新增</title>
 </head>
 <body>
-<form action="/addCard" method="get">
-    手机号：<input type="text" name="phone"><br/>
-    密码：<input type="text" name="password"><br/>
-    iccid：<input type="text" name="icc_id"><br/>
-    用户码：<input type="text" name="user"><br/>
-    <input type="submit" value="添加">
+{% include "nav.html" %}
+<form>
+    手机号：<input type="text" id="phone"><br/>
+    密码：<input type="text" id="password"><br/>
+    iccid：<input type="text" id="icc_id"><br/>
+    序号：<input type="text" id="sort"><br/>
+    备注：<input type="text" id="remark"><br/>
+    {#    用户码：#}
+    <input type="hidden" id="user"><br/>
+    <input type="button" onclick="save()" value="添加">
 </form>
+<script>
+
+    initUser = () => {
+        document.getElementById("user").value = localStorage.getItem("user");
+    };
+
+    save = (user) => {
+        let formData = new FormData();
+        formData.append("phone", document.getElementById("phone").value);
+        formData.append("password", document.getElementById("password").value);
+        formData.append("icc_id", document.getElementById("icc_id").value);
+        formData.append("sort", document.getElementById("sort").value);
+        formData.append("remark", document.getElementById("remark").value);
+        formData.append("user", document.getElementById("user").value);
+        const opts = {
+            method: "POST",   //请求方法
+            body: formData,   //请求体
+        };
+        fetch("/addCard/", opts).then((data) => {
+            if (data.ok) {
+                data.text().then(res => {
+                    window.location.href = "/query?user=" + localStorage.getItem("user");
+                    console.log(res);
+                })
+            } else {
+                alert(data.error())
+            }
+        });
+    };
+
+    (() => {
+        initUser();
+    })()
+</script>
 </body>
 </html>

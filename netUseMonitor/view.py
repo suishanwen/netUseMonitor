@@ -10,13 +10,21 @@ def hello(request):
     return render(request, 'hello.html', context)
 
 
-def search(request):
-    return render(request, 'search.html')
+def index(request):
+    context = {}
+    context['hello'] = 'Hello World!'
+    return render(request, 'index.html', context)
 
 
 # 数据库操作
 def add(request):
-    return render(request, 'add.html')
+    user = ""
+    # 获取单个对象
+    if 'user' in request.GET:
+        user = request.GET['user']
+    context = {}
+    context['user'] = user
+    return render(request, 'add.html', context)
 
 
 def addCard(request):
@@ -25,74 +33,72 @@ def addCard(request):
     password = ''
     icc_id = ''
     user = ''
-    if 'phone' in request.GET:
-        phone = request.GET['phone']
-    if 'password' in request.GET:
-        password = request.GET['password']
-    if 'icc_id' in request.GET:
-        icc_id = request.GET['icc_id']
-    if 'user' in request.GET:
-        user = request.GET['user']
-    card = Card(phone=phone, password=password, icc_id=icc_id, user=user)
+    sort = ''
+    remark = ''
+    if 'phone' in request.POST:
+        phone = request.POST['phone']
+    if 'password' in request.POST:
+        password = request.POST['password']
+    if 'icc_id' in request.POST:
+        icc_id = request.POST['icc_id']
+    if 'user' in request.POST:
+        user = request.POST['user']
+    if 'sort' in request.POST:
+        sort = request.POST['sort']
+    if 'remark' in request.POST:
+        remark = request.POST['remark']
+    card = Card(phone=phone, password=password, icc_id=icc_id, user=user, remark=remark, sort=sort)
     card.save()
-    return query(request)
+    return HttpResponse("添加成功！")
 
 
 def update(request):
     # 修改其中一个id=1的name字段，再save，相当于SQL中的UPDATE
-    card = Card.objects.get(id=1)
-    card.password = card.password + "-"
+    pk = request.POST['pk']
+    phone = request.POST['phone']
+    password = request.POST['password']
+    sort = request.POST['sort']
+    icc_id = request.POST['icc_id']
+    remark = request.POST['remark']
+
+    card = Card.objects.get(pk=pk)
+    card.phone = phone
+    card.password = password
+    card.sort = sort
+    card.icc_id = icc_id
+    card.remark = remark
     card.save()
 
     # 另外一种方式
-    # Test.objects.filter(id=1).update(name='Google')
+    # Card.objects.filter(pk=pk).update(sort=sort)
 
     # 修改所有的列
     # Test.objects.all().update(name='Google')
-
-    return HttpResponse("<p>修改成功</p>")
+    return HttpResponse("保存成功！")
 
 
 def delete(request):
     # 删除id=1的数据
-    list = Card.objects.all()
-    list.delete()
+    pk = request.POST['pk']
+    card = Card.objects.get(pk=pk)
+    card.delete()
 
     # 另外一种方式
-    # Test.objects.filter(id=1).delete()
+    # Card.objects.filter(pk=pk).delete()
 
     # 删除所有数据
     # Test.objects.all().delete()
 
-    return HttpResponse("<p>删除成功</p>")
+    return HttpResponse("删除成功")
 
 
 # 数据库操作
 def query(request):
-    # 初始化
-    response = ""
-    response1 = ""
-
-    # 通过objects这个模型管理器的all()获得所有数据行，相当于SQL中的SELECT * FROM
-    list = Card.objects.all()
-
-    # filter相当于SQL中的WHERE，可设置条件过滤结果
-    # response2 = Card.objects.filter(id=1)
-
-    # 获取单个对象
-    # response3 = Card.objects.get(id=1)
-
-    # 限制返回的数据 相当于 SQL 中的 OFFSET 0 LIMIT 2;
-    # Card.objects.order_by('name')[0:2]
-
-    # 数据排序
-    # Card.objects.order_by("id")
-
-    # 上面的方法可以连锁使用
-    # Card.objects.filter(name="runoob").order_by("id")
-
-    # 输出所有数据
-    for var in list:
-        response1 += str(var.pk) + " " + var.phone + " " + var.password + " " + var.net + "<br/>"
-    response = response1
-    return HttpResponse("<p>" + response + "</p>")
+    user = ''
+    if 'user' in request.GET:
+        user = request.GET['user']
+    list = Card.objects.filter(user=user).order_by("sort")
+    context = {
+        "data": list
+    }
+    return render(request, 'list.html', context)

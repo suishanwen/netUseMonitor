@@ -2,9 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>首页</title>
 </head>
 <body>
+<div>
+    <div>
+        <span>用户码</span>
+        <span><input id="user" type="password" name="user"/></span>
+    </div>
+    <div>
+        <button onclick="query()">查询</button>
+    </div>
+    <div>
+        <button onclick="add()">新增</button>
+    </div>
+    <div></div>
+</div>
+<script>
+    getUser = () => {
+        return document.getElementById("user").value;
+    };
 
+    initUser = () => {
+        document.getElementById("user").value = localStorage.getItem("user");
+    };
+
+    setStorage = (user) => {
+        localStorage.setItem("user", user);
+    };
+
+    query = () => {
+        const user = getUser();
+        if (!user) {
+            alert("请输入用户码！");
+            return;
+        }
+        setStorage(user);
+        window.location.href = "/query?user=" + user;
+
+    };
+
+    add = () => {
+        const user = getUser();
+        if (!user) {
+            alert("请输入用户码！");
+            return;
+        }
+        setStorage(user);
+        window.location.href = "/add";
+    };
+
+    (() => {
+        initUser();
+    })()
+</script>
 </body>
 </html>

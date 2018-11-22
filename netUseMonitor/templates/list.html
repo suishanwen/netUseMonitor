@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看</title>
+</head>
+<body>
+{% include "nav.html" %}
+<table border="1px solid grey">
+    <thead>
+    <td>pk</td>
+    <td>序号</td>
+    <td>手机号</td>
+    <td>流量</td>
+    <td>密码</td>
+    <td>icc_id</td>
+    <td>备注</td>
+    <td>用户码</td>
+    <td>操作</td>
+    </thead>
+    <tbody>
+    {% for item in data %}
+        <tr id="{{ item.pk }}">
+            <td>{{ item.pk }}</td>
+            <td><input type="text" class="sort" value="{{ item.sort }}"></td>
+            <td><input type="text" class="phone" value="{{ item.phone }}"></td>
+            <td>{{ item.net }}</td>
+            <td><input type="text" class="password" value="{{ item.password }}"></td>
+            <td><input type="text" class="icc_id" value="{{ item.icc_id }}"></td>
+            <td><input type="text" class="remark" value="{{ item.remark }}"></td>
+            <td>{{ item.user }}</td>
+            <td>
+                <button onclick="save({{ item.pk }})">保存</button>
+                <button onclick="del({{ item.pk }})">删除</button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<script>
+    save = (pk) => {
+        const tr = document.getElementById(pk);
+        let formData = new FormData();
+        formData.append("pk", pk);
+        formData.append("sort", tr.getElementsByClassName("sort")[0].value);
+        formData.append("phone", tr.getElementsByClassName("phone")[0].value);
+        formData.append("password", tr.getElementsByClassName("password")[0].value);
+        formData.append("icc_id", tr.getElementsByClassName("icc_id")[0].value);
+        formData.append("remark", tr.getElementsByClassName("remark")[0].value);
+        const opts = {
+            method: "POST",   //请求方法
+            body: formData,   //请求体
+        };
+        fetch("/update/", opts).then((data) => {
+            if (data.ok) {
+                data.text().then(res => {
+                    window.location.href = "/query?user=" + localStorage.getItem("user");
+                    console.log(res);
+                })
+            } else {
+                alert(data.error())
+            }
+        });
+    };
+
+    del = (pk) => {
+        const tr = document.getElementById(pk);
+        let formData = new FormData();
+        formData.append("pk", pk);
+        const opts = {
+            method: "POST",   //请求方法
+            body: formData,   //请求体
+        };
+        fetch("/delete/", opts).then((data) => {
+            if (data.ok) {
+                data.text().then(res => {
+                    window.location.href = "/query?user=" + localStorage.getItem("user");
+                    console.log(res)
+                })
+            } else {
+                alert(data.error())
+            }
+        });
+    };
+</script>
+</body>
+</html>
