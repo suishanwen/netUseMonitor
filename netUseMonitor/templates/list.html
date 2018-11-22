@@ -6,30 +6,28 @@
 </head>
 <body>
 {% include "nav.html" %}
+<button onclick="quertNetAll('{{ data }}')">一键查流量</button>
 <table border="1px solid grey">
     <thead>
-    <td>pk</td>
     <td>序号</td>
     <td>手机号</td>
     <td>流量</td>
     <td>密码</td>
     <td>icc_id</td>
     <td>备注</td>
-    <td>用户码</td>
     <td>操作</td>
     </thead>
     <tbody>
     {% for item in data %}
         <tr id="{{ item.pk }}">
-            <td>{{ item.pk }}</td>
-            <td><input type="text" class="sort" value="{{ item.sort }}"></td>
+            <td><input type="text" style="width:20px" class="sort" maxlength="3" value="{{ item.sort }}"></td>
             <td><input type="text" class="phone" value="{{ item.phone }}"></td>
             <td>{{ item.net }}</td>
-            <td><input type="text" class="password" value="{{ item.password }}"></td>
+            <td>{{ item.encryptPassword }}</td>
             <td><input type="text" class="icc_id" value="{{ item.icc_id }}"></td>
             <td><input type="text" class="remark" value="{{ item.remark }}"></td>
-            <td>{{ item.user }}</td>
             <td>
+                <button onclick="queryNet({{ item.pk }},true)">查流量</button>
                 <button onclick="save({{ item.pk }})">保存</button>
                 <button onclick="del({{ item.pk }})">删除</button>
             </td>
@@ -38,13 +36,40 @@
     </tbody>
 </table>
 <script>
+    quertNetAll = (data) => {
+        {% for item in data %}
+            queryNet({{ item.pk }}, false);
+        {% endfor %}
+        window.location.href = "/query?user=" + localStorage.getItem("user");
+    };
+    queryNet = (pk, refresh) => {
+        let formData = new FormData();
+        formData.append("pk", pk);
+        const opts = {
+            method: "POST",   //请求方法
+            body: formData,   //请求体
+        };
+        fetch("/queryNet/", opts).then((data) => {
+            if (data.ok) {
+                data.text().then(res => {
+                    if (refresh) {
+                        window.location.href = "/query?user=" + localStorage.getItem("user");
+                    }
+                    console.log(res);
+                })
+            } else {
+                alert(data.error())
+            }
+        });
+    };
+
     save = (pk) => {
         const tr = document.getElementById(pk);
         let formData = new FormData();
         formData.append("pk", pk);
         formData.append("sort", tr.getElementsByClassName("sort")[0].value);
         formData.append("phone", tr.getElementsByClassName("phone")[0].value);
-        formData.append("password", tr.getElementsByClassName("password")[0].value);
+        {#formData.append("password", tr.getElementsByClassName("password")[0].value);#}
         formData.append("icc_id", tr.getElementsByClassName("icc_id")[0].value);
         formData.append("remark", tr.getElementsByClassName("remark")[0].value);
         const opts = {

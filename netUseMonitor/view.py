@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from telecom.models import Card
+from login.Login import login, dxPwdEncrypt
 
 
 def hello(request):
@@ -47,7 +48,9 @@ def addCard(request):
         sort = request.POST['sort']
     if 'remark' in request.POST:
         remark = request.POST['remark']
-    card = Card(phone=phone, password=password, icc_id=icc_id, user=user, remark=remark, sort=sort)
+    card = Card(phone=phone, password=password, encryptPassword=dxPwdEncrypt(password).strip(), icc_id=icc_id,
+                user=user, remark=remark,
+                sort=sort)
     card.save()
     return HttpResponse("添加成功！")
 
@@ -56,14 +59,14 @@ def update(request):
     # 修改其中一个id=1的name字段，再save，相当于SQL中的UPDATE
     pk = request.POST['pk']
     phone = request.POST['phone']
-    password = request.POST['password']
+    # password = request.POST['password']
     sort = request.POST['sort']
     icc_id = request.POST['icc_id']
     remark = request.POST['remark']
 
     card = Card.objects.get(pk=pk)
     card.phone = phone
-    card.password = password
+    # card.password = password
     card.sort = sort
     card.icc_id = icc_id
     card.remark = remark
@@ -102,3 +105,12 @@ def query(request):
         "data": list
     }
     return render(request, 'list.html', context)
+
+
+# 数据库操作
+def queryNet(request):
+    pk = request.POST['pk']
+    card = Card.objects.get(pk=pk)
+    card.net = login(card.phone, card.password)
+    card.save()
+    return HttpResponse("查询成功:%s" % card.net)

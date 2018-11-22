@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from PIL import Image
 import pytesseract
 
-basePath = "./"
+basePath = "./login/"
 
 
 class Login:
@@ -14,7 +14,6 @@ class Login:
         self.req = requests.session()
         self.phoneNo = phoneNo
         self.password = password
-        self.encryptPassword = self.dxPwdEncrypt(password).strip()
         self.provinceID = ''
         self.EcsLoginToken = ''
         self.png = ''
@@ -116,7 +115,7 @@ class Login:
             'AreaCode': '',
             'CityNo': '',
             'RandomFlag': '0',
-            'Password': self.encryptPassword,
+            'Password': self.password,
             'Captcha': captcha
         }
         try:
@@ -138,11 +137,13 @@ class Login:
         total = info["total"]
         surplus = info["Surplus"]
         used = info["used"]
-        print('套餐流量：%s %s，剩余流量：%s %s, 已使用：%s %s' % (
+        net = '套餐流量：%s %s，剩余流量：%s %s, 已使用：%s %s' % (
             total["value"], total["unit"],
             surplus["value"], surplus["unit"],
             used["value"], used["unit"]
-        ))
+        )
+        print(net)
+        return net
 
     def dxCommLogin(self, params):
         url = 'http://login.189.cn/web/login'
@@ -169,22 +170,23 @@ class Login:
         self.req.get(redirecrUrl, timeout=10, allow_redirects=False)
         return {"errorCode": "0"}
 
-    def dxPwdEncrypt(self, pwd):
-        with PyV8.JSLocker():
-            with PyV8.JSContext() as ctxt:
-                with open(basePath + "dx_encrypt.js", 'r') as f:
-                    js = f.read()
-                js += '\n'
-
-                ctxt.eval(js)
-                #
-                encryptPwd = ctxt.eval("valAesEncryptSet('%s')" % pwd)
-                #
-                return encryptPwd
-
     def image_to_string(self):
         image = Image.open(self.png)
         return pytesseract.image_to_string(image)
+
+
+def dxPwdEncrypt(pwd):
+    with PyV8.JSLocker():
+        with PyV8.JSContext() as ctxt:
+            with open(basePath + "dx_encrypt.js", 'r') as f:
+                js = f.read()
+            js += '\n'
+
+            ctxt.eval(js)
+            #
+            encryptPwd = ctxt.eval("valAesEncryptSet('%s')" % pwd)
+            #
+            return encryptPwd
 
 
 def mkdir(path):
@@ -212,9 +214,9 @@ def save_file(path, file_name, data):
     file.close()
 
 
-if __name__ == '__main__':
+def login(phone, password):
     # dx = login('19948715071', '915275')
-    dx = Login('17731120253', '436635')
+    dx = Login(phone, password)
     errorCode = ""
     count = 0
     while errorCode != '0':
@@ -233,4 +235,4 @@ if __name__ == '__main__':
             errorMsg = res['errorMsg']
             print(errorMsg)
     print("%s登陆成功" % dx.phoneNo)
-    dx.getTaocan()
+    return dx.getTaocan()
