@@ -6,7 +6,8 @@
 </head>
 <body>
 {% include "nav.html" %}
-<button onclick="quertNetAll('{{ data }}')">一键查流量</button>
+<button onclick="quertNetAll()">一键查流量</button>
+<button onclick="emptyNetAll()">清空流量记录</button>
 <table border="1px solid grey">
     <thead>
     <td>序号</td>
@@ -15,6 +16,7 @@
     <td>密码</td>
     <td>icc_id</td>
     <td>备注</td>
+    <td>更新时间</td>
     <td>操作</td>
     </thead>
     <tbody>
@@ -22,10 +24,11 @@
         <tr id="{{ item.pk }}">
             <td><input type="text" style="width:20px" class="sort" maxlength="3" value="{{ item.sort }}"></td>
             <td><input type="text" class="phone" value="{{ item.phone }}"></td>
-            <td>{{ item.net }}</td>
+            <td class="net">{{ item.net }}</td>
             <td>{{ item.encryptPassword }}</td>
             <td><input type="text" class="icc_id" value="{{ item.icc_id }}"></td>
             <td><input type="text" class="remark" value="{{ item.remark }}"></td>
+            <td>{{ item.update|date:'Y-m-d H:i:s' }}</td>
             <td>
                 <button onclick="queryNet({{ item.pk }},true)">查流量</button>
                 <button onclick="save({{ item.pk }})">保存</button>
@@ -36,24 +39,64 @@
     </tbody>
 </table>
 <script>
-    quertNetAll = (data) => {
-        {% for item in data %}
-            queryNet({{ item.pk }}, false);
-        {% endfor %}
-        window.location.href = "/query?user=" + localStorage.getItem("user");
+
+    counter = {
+        total: 0,
+        count: 0
     };
-    queryNet = (pk, refresh) => {
+
+    emptyNetAll = () => {
+        let formData = new FormData();
+        formData.append(" user", localStorage.getItem("user"));
+        const opts = {
+            method: "POST", //请求方法
+            body: formData, //请求体
+        };
+        fetch("/emptyNetAll/", opts).then((data) => {
+            if (data.ok) {
+                data.text().then(res => {
+                    console.log(res);
+                    window.location.href = "/query?user=" + localStorage.getItem("user");
+                })
+            } else {
+                alert(data.error())
+            }
+        });
+    };
+
+    quertNetAll = () => {
+        counter = {
+            total: 0,
+            count: 0
+        };
+        const callback = () => {
+            counter.count++;
+            if (counter.count === counter.total) {
+                window.location.href = "/query?user=" + localStorage.getItem("user");
+            }
+        };
+        {% for item in data %}
+            counter.total++;
+            queryNet({{ item.pk }}, false, callback);
+        {% endfor %}
+    };
+
+    queryNet = (pk, refresh, callback) => {
         let formData = new FormData();
         formData.append("pk", pk);
         const opts = {
-            method: "POST",   //请求方法
-            body: formData,   //请求体
+            method: "POST", //请求方法
+            body: formData, //请求体
         };
         fetch("/queryNet/", opts).then((data) => {
             if (data.ok) {
                 data.text().then(res => {
+                    setNetValue(pk, res);
                     if (refresh) {
                         window.location.href = "/query?user=" + localStorage.getItem("user");
+                    }
+                    if (typeof  callback === "function") {
+                        callback();
                     }
                     console.log(res);
                 })
@@ -61,6 +104,11 @@
                 alert(data.error())
             }
         });
+    };
+
+    setNetValue = (pk, net) => {
+        const tr = document.getElementById(pk);
+        tr.getElementsByClassName("net")[0].innerHTML = net;
     };
 
     save = (pk) => {
@@ -73,8 +121,8 @@
         formData.append("icc_id", tr.getElementsByClassName("icc_id")[0].value);
         formData.append("remark", tr.getElementsByClassName("remark")[0].value);
         const opts = {
-            method: "POST",   //请求方法
-            body: formData,   //请求体
+            method: "POST", //请求方法
+            body: formData, //请求体
         };
         fetch("/update/", opts).then((data) => {
             if (data.ok) {
@@ -93,8 +141,8 @@
         let formData = new FormData();
         formData.append("pk", pk);
         const opts = {
-            method: "POST",   //请求方法
-            body: formData,   //请求体
+            method: "POST", //请求方法
+            body: formData, //请求体
         };
         fetch("/delete/", opts).then((data) => {
             if (data.ok) {

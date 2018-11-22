@@ -114,3 +114,10 @@ def queryNet(request):
     card.net = login(card.phone, card.password)
     card.save()
     return HttpResponse("查询成功:%s" % card.net)
+
+
+# 数据库操作
+def emptyNetAll(request):
+    user = request.POST['user']
+    Card.objects.filter(user=user).update(net='')
+    return HttpResponse("%s已清空" % user)

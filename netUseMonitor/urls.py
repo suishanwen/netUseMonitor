@@ -27,4 +27,5 @@ urlpatterns = [
     path('delete/', view.delete),
     path('query/', view.query),
     path('queryNet/', view.queryNet),
+    path('emptyNetAll/', view.emptyNetAll),
 ]
