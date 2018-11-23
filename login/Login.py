@@ -153,7 +153,7 @@ class Login:
             soup = BeautifulSoup(resp.text, 'html.parser')
             errorMsg = soup.find(id='loginForm').attrs['data-errmsg']
             if errorMsg:
-                if u'密码错误' in errorMsg:
+                if u'密码错误' in errorMsg or u'账号不存在' in errorMsg:
                     return {"errorCode": "20008", "errorMsg": "你输入的密码和账户名不匹配"}
                 elif u'验证码' in errorMsg:
                     return {"errorCode": "20014", "errorMsg": "验证码输入不正确"}
@@ -217,9 +217,10 @@ def save_file(path, file_name, data):
 def login(phone, password):
     # dx = login('19948715071', '915275')
     dx = Login(phone, password)
-    errorCode = ""
+    errorCode = '20014'
+    errorMsg = ''
     count = 0
-    while errorCode != '0':
+    while errorCode == '20014':
         dx.getCaptcha()
         captcha = dx.image_to_string().replace(" ", "")
         print("识别验证码为：%s" % captcha)
@@ -234,5 +235,9 @@ def login(phone, password):
         if errorCode != '0':
             errorMsg = res['errorMsg']
             print(errorMsg)
-    print("%s登陆成功" % dx.phoneNo)
-    return dx.getTaocan()
+
+    if errorCode == '0':
+        print("%s登陆成功" % dx.phoneNo)
+        return dx.getTaocan()
+    else:
+        return errorMsg
