@@ -22,7 +22,7 @@
     <tbody>
     {% for item in data %}
         <tr id="{{ item.pk }}">
-            <td><input type="text" style="width:20px" class="sort" maxlength="3" value="{{ item.sort }}"></td>
+            <td><input type="number" style="width:40px" class="sort" maxlength="3" value="{{ item.sort }}"></td>
             <td><input type="text" class="phone" value="{{ item.phone }}"></td>
             <td class="net">{{ item.net }}</td>
             <td>{{ item.encryptPassword }}</td>

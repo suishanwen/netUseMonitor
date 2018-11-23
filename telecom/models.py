@@ -12,5 +12,5 @@ class Card(models.Model):
     user = models.CharField(max_length=40, default='')
     net = models.CharField(max_length=100, default='')
     remark = models.CharField(max_length=100, default='')
-    sort = models.IntegerField(default=None)
+    sort = models.IntegerField(default=None, null=True)
     update = models.DateTimeField(auto_now=True)
