@@ -42,7 +42,7 @@ def addCard(request):
     if 'password' in request.POST:
         password = request.POST['password']
     if 'encryptPassword' in request.POST:
-        password = request.POST['encryptPassword']
+        encryptPassword = request.POST['encryptPassword']
     if 'icc_id' in request.POST:
         icc_id = request.POST['icc_id']
     if 'user' in request.POST:
