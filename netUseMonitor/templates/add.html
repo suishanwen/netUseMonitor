@@ -16,6 +16,7 @@
     <input type="hidden" id="user"><br/>
     <input type="button" onclick="save()" value="添加">
 </form>
+<script src="../../login/dx_encrypt.js"></script>
 <script>
 
     initUser = () => {
@@ -36,6 +37,7 @@
         let formData = new FormData();
         formData.append("phone", phone);
         formData.append("password", password);
+        formData.append("encryptPassword", valAesEncryptSet(password));
         formData.append("icc_id", document.getElementById("icc_id").value);
         formData.append("sort", document.getElementById("sort").value);
         formData.append("remark", document.getElementById("remark").value);
