@@ -116,7 +116,7 @@ def queryNet(request):
     card = Card.objects.get(pk=pk)
     card.net = login(card.phone, card.password)
     card.save()
-    return HttpResponse("查询成功:%s" % card.net)
+    return HttpResponse("%s" % card.net)
 
 
 # 数据库操作
