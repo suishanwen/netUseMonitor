@@ -72,9 +72,17 @@ WSGI_APPLICATION = 'netUseMonitor.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',  # 链接配置换成这个
+        'NAME': 'dx',
+        'USER': 'root',
+        'PASSWORD': 'q1212456',
+        'HOST': 'http://bitcoinrobot.cn',
+        'PORT': '3306',
     }
 }
 
