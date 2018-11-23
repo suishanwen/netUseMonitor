@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'dx',
         'USER': 'root',
         'PASSWORD': 'q1212456',
-        'HOST': 'http://bitcoinrobot.cn',
+        'HOST': 'bitcoinrobot.cn',
         'PORT': '3306',
     }
 }
