@@ -34,7 +34,7 @@ def addCard(request):
     password = ''
     icc_id = ''
     user = ''
-    sort = ''
+    sort = None
     remark = ''
     if 'phone' in request.POST:
         phone = request.POST['phone']
@@ -46,8 +46,8 @@ def addCard(request):
         user = request.POST['user']
     if 'sort' in request.POST:
         sort = request.POST['sort']
-    if 'remark' in request.POST:
-        remark = request.POST['remark']
+    if 'remark' in request.POST and request.POST['remark'] != '':
+        remark = int(request.POST['remark'])
     card = Card(phone=phone, password=password, encryptPassword=dxPwdEncrypt(password).strip(), icc_id=icc_id,
                 user=user, remark=remark,
                 sort=sort)

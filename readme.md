@@ -6,6 +6,8 @@ pip3 install pytesseract
 
 pip3 install mysql-connector
 
+pip3 install pymysql
+
 brew install pytesseract
 
 or
