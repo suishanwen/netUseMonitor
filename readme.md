@@ -7,6 +7,10 @@ pip3 install pytesseract
 
 brew install pytesseract
 
+or
+
+apt install pytesseract-ocr
+
 
 
 add pyv8-p3 to python3 site-packages

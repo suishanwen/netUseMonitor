@@ -7,8 +7,8 @@
 <body>
 {% include "nav.html" %}
 <form>
-    手机号：<input type="text" id="phone"><br/>
-    密码：<input type="text" id="password"><br/>
+    *手机号：<input type="text" id="phone"><br/>
+    *密码：<input type="text" id="password"><br/>
     iccid：<input type="text" id="icc_id"><br/>
     序号：<input type="text" id="sort"><br/>
     备注：<input type="text" id="remark"><br/>
@@ -23,9 +23,19 @@
     };
 
     save = (user) => {
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+        if (!phone) {
+            alert("手机号不能为空！");
+            return;
+        }
+        if (!password) {
+            alert("密码不能为空！");
+            return;
+        }
         let formData = new FormData();
-        formData.append("phone", document.getElementById("phone").value);
-        formData.append("password", document.getElementById("password").value);
+        formData.append("phone", phone);
+        formData.append("password", password);
         formData.append("icc_id", document.getElementById("icc_id").value);
         formData.append("sort", document.getElementById("sort").value);
         formData.append("remark", document.getElementById("remark").value);
