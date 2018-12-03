@@ -13,7 +13,6 @@
     <td>序号</td>
     <td>手机号</td>
     <td>流量</td>
-    <td>密码</td>
     <td>icc_id</td>
     <td>备注</td>
     <td>更新时间</td>
@@ -22,14 +21,13 @@
     <tbody>
     {% for item in data %}
         <tr id="{{ item.pk }}">
-            <td><input type="number" style="width:40px" class="sort" maxlength="3" value="{{ item.sort }}"></td>
-            <td><input type="text" class="phone" value="{{ item.phone }}"></td>
-            <td class="net">{{ item.net }}</td>
-            <td>{{ item.encryptPassword }}</td>
-            <td><input type="text" class="icc_id" value="{{ item.icc_id }}"></td>
-            <td><input type="text" class="remark" value="{{ item.remark }}"></td>
-            <td>{{ item.update|date:'Y-m-d H:i:s' }}</td>
-            <td>
+            <td style="width: 5%"><input type="number" style="width:40px" class="sort" maxlength="3" value="{{ item.sort }}"></td>
+            <td style="width: 12%"><input type="text" class="phone" value="{{ item.phone }}"></td>
+            <td style="width: 35%" class="net">{{ item.net }}</td>
+            <td style="width: 12%"><input type="text" class="icc_id" value="{{ item.icc_id }}"></td>
+            <td style="width: 12%"><input type="text" class="remark" value="{{ item.remark }}"></td>
+            <td style="width: 12%">{{ item.update|date:'Y-m-d H:i:s' }}</td>
+            <td style="width: 12%">
                 <button onclick="queryNet({{ item.pk }},true)">查流量</button>
                 <button onclick="save({{ item.pk }})">保存</button>
                 <button onclick="del({{ item.pk }})">删除</button>
@@ -43,6 +41,10 @@
     counter = {
         total: 0,
         count: 0
+    };
+
+    loading = {
+        "pk": false
     };
 
     emptyNetAll = () => {
@@ -88,9 +90,11 @@
             method: "POST", //请求方法
             body: formData, //请求体
         };
+        loading[pk] = true;
         fetch("/queryNet/", opts).then((data) => {
             if (data.ok) {
                 data.text().then(res => {
+                    loading[pk] = false;
                     setNetValue(pk, res);
                     if (refresh) {
                         window.location.href = "/query?user=" + localStorage.getItem("user");
@@ -101,6 +105,7 @@
                     console.log(res);
                 })
             } else {
+                loading[pk] = false;
                 alert(data.error())
             }
         });
@@ -155,6 +160,27 @@
             }
         });
     };
+
+    loadInfo = (pk) => {
+        fetch(`/loadInfo/?pk=${pk}`).then((data) => {
+            if (data.ok) {
+                data.text().then(res => {
+                    setNetValue(pk, res);
+                })
+            } else {
+                setNetValue(pk, data.error());
+            }
+        });
+    };
+
+
+    setInterval(() => {
+        for (let i in loading) {
+            if (loading[i]) {
+                loadInfo(i);
+            }
+        }
+    }, 500)
 </script>
 </body>
 </html>

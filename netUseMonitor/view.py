@@ -117,10 +117,16 @@ def query(request):
 def queryNet(request):
     pk = request.POST['pk']
     card = Card.objects.get(pk=pk)
-    card.net = login(card.phone, card.password)
+    card.net = login(card)
     card.save()
     return HttpResponse("%s" % card.net)
 
+
+# 数据库操作
+def loadInfo(request):
+    pk = request.GET['pk']
+    card = Card.objects.get(pk=pk)
+    return HttpResponse("%s" % card.net)
 
 # 数据库操作
 def emptyNetAll(request):

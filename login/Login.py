@@ -2,6 +2,7 @@ import requests
 import traceback
 import os
 import PyV8
+import time
 from bs4 import BeautifulSoup
 from PIL import Image
 import pytesseract
@@ -213,31 +214,41 @@ def save_file(path, file_name, data):
     file.flush()
     file.close()
 
+def notify_info(card,msg):
+    print(msg)
+    card.net = msg
+    card.save()
 
-def login(phone, password):
+
+def login(card):
     # dx = login('19948715071', '915275')
-    dx = Login(phone, password)
+    dx = Login(card.phone, card.password)
     errorCode = '20014'
     errorMsg = ''
+    info = ''
     count = 0
     while errorCode == '20014':
         dx.getCaptcha()
         captcha = dx.image_to_string().replace(" ", "")
-        print("识别验证码为：%s" % captcha)
+        info = "识别验证码为：%s" % captcha
+        notify_info(card,info)
         if len(captcha) != 4 or not captcha.isalnum():
-            print("验证码不规范，重新获取")
+            info = "验证码不规范，重新获取"
+            notify_info(card, info)
             continue
         # captcha = input("请输入验证码：")
         count += 1
-        print("尝试第%d次登陆" % count)
+        info = "尝试第%d次登陆" % count
+        notify_info(card, info)
         res = dx.login(captcha, '')
         errorCode = res['errorCode']
         if errorCode != '0':
             errorMsg = res['errorMsg']
-            print(errorMsg)
+            notify_info(card, errorMsg)
 
     if errorCode == '0':
-        print("%s登陆成功" % dx.phoneNo)
+        info = "%s登陆成功" % dx.phoneNo
+        notify_info(card, info)
         return dx.getTaocan()
     else:
         return errorMsg
