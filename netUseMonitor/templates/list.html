@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>查看</title>
 </head>
 <body>
+<link rel="stylesheet" type="text/css" href="http://bitcoinrobot.cn/file/assets/bootstrap.3.1.1/bootstrap.min.css">
 {% include "nav.html" %}
-<button onclick="quertNetAll()">一键查流量</button>
-<button onclick="emptyNetAll()">清空流量记录</button>
-<table border="1px solid grey">
+<button onclick="quertNetAll()" class="btn btn-primary">一键查询</button>
+<button onclick="emptyNetAll()" class="btn btn-danger">清空流量记录</button>
+<table class="table table-striped">
     <thead>
     <td>序号</td>
     <td>手机号</td>
@@ -21,16 +23,17 @@
     <tbody>
     {% for item in data %}
         <tr id="{{ item.pk }}">
-            <td style="width: 5%"><input type="number" style="width:40px" class="sort" maxlength="3" value="{{ item.sort }}"></td>
+            <td style="width: 5%"><input type="number" style="width:40px" class="sort" maxlength="3"
+                                         value="{{ item.sort }}"></td>
             <td style="width: 12%"><input type="text" class="phone" value="{{ item.phone }}"></td>
             <td style="width: 35%" class="net">{{ item.net }}</td>
             <td style="width: 12%"><input type="text" class="icc_id" value="{{ item.icc_id }}"></td>
             <td style="width: 12%"><input type="text" class="remark" value="{{ item.remark }}"></td>
             <td style="width: 12%">{{ item.update|date:'Y-m-d H:i:s' }}</td>
             <td style="width: 12%">
-                <button onclick="queryNet({{ item.pk }},true)">查流量</button>
-                <button onclick="save({{ item.pk }})">保存</button>
-                <button onclick="del({{ item.pk }})">删除</button>
+                <button class="btn btn-primary" onclick="queryNet({{ item.pk }},true)">查询</button>
+                <button class="btn btn-default" onclick="save({{ item.pk }})">保存</button>
+                <button class="btn btn-danger" onclick="del({{ item.pk }})">删除</button>
             </td>
         </tr>
     {% endfor %}

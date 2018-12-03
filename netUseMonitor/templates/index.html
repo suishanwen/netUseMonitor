@@ -2,22 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="http://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/css/bootstrap.min.css">
+    <script src="http://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/js/jquery.slim.min.js"></script>
+    <script src="http://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/js/bootstrap.min.js"></script>
     <title>首页</title>
 </head>
 <body>
-<div>
-    <div>
-        <span>用户码</span>
-        <span><input id="user" type="password" name="user"/></span>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    首页
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <span>用户码</span>
+                    <span><input id="user" type="password" name="user"/></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="query()">查询
+                </button>
+                <button type="button" class="btn btn-default" onclick="add()">
+                    新增
+                </button>
+            </div>
+        </div>
     </div>
-    <div>
-        <button onclick="query()">查询</button>
-    </div>
-    <div>
-        <button onclick="add()">新增</button>
-    </div>
-    <div></div>
 </div>
+
+
 <script>
     getUser = () => {
         return document.getElementById("user").value;
@@ -54,6 +73,7 @@
 
     (() => {
         initUser();
+        $('#myModal').modal('show')
     })()
 </script>
 </body>
