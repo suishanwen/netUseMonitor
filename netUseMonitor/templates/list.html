@@ -87,6 +87,9 @@
     };
 
     queryNet = (pk, refresh, callback) => {
+        if (loading[pk]) {
+            return false;
+        }
         let formData = new FormData();
         formData.append("pk", pk);
         const opts = {
