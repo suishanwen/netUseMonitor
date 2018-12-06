@@ -3,9 +3,11 @@ import traceback
 import os
 import PyV8
 import time
+import json
+import datetime
 from bs4 import BeautifulSoup
 from PIL import Image
-import pytesseract
+from io import BytesIO
 
 basePath = "./login/"
 
@@ -173,7 +175,21 @@ class Login:
 
     def image_to_string(self):
         image = Image.open(self.png)
-        return pytesseract.image_to_string(image)
+        imgByteArr = BytesIO()
+        image.save(imgByteArr, format='PNG')
+        # 识别
+        s = time.time()
+        url = "http://127.0.0.1:6000/b"
+        image_file_name = 'captcha.{}'.format("png")
+        files = {'image_file': (image_file_name, imgByteArr.getvalue(), 'application')}
+        r = requests.post(url=url, files=files)
+        e = time.time()
+        # 识别结果
+        print("接口响应: {}".format(r.text))
+        predict_text = json.loads(r.text)["value"]
+        now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print("【{}】 耗时：{}ms 预测结果：{}".format(now_time, int((e - s) * 1000), predict_text))
+        return predict_text
 
 
 def dxPwdEncrypt(pwd):
