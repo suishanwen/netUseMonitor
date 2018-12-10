@@ -23,17 +23,19 @@
     <tbody>
     {% for item in data %}
         <tr id="{{ item.pk }}">
-            <td style="width: 5%"><input type="number" style="width:40px" class="sort" maxlength="3"
-                                         value="{{ item.sort }}"></td>
-            <td style="width: 12%"><input type="text" class="phone" value="{{ item.phone }}"></td>
-            <td style="width: 30%" class="net">{{ item.net }}</td>
-            <td style="width: 12%"><input type="text" class="icc_id" value="{{ item.icc_id }}"></td>
-            <td style="width: 12%"><input type="text" class="remark" value="{{ item.remark }}"></td>
-            <td style="width: 12%">{{ item.update|date:'Y-m-d H:i:s' }}</td>
-            <td style="width: 17%">
-                <button class="btn btn-primary" onclick="queryNet({{ item.pk }},true)">查询</button>
-                <button class="btn btn-default" onclick="save({{ item.pk }})">保存</button>
-                <button class="btn btn-danger" onclick="del({{ item.pk }})">删除</button>
+            <td><input style="max-width: 40px" type="number" style="width:40px" class="sort" maxlength="3"
+                       value="{{ item.sort }}"></td>
+            <td><input style="max-width: 100px" type="text" class="phone" value="{{ item.phone }}"></td>
+            <td class="net"><span style="min-width: 330px">{{ item.net }}</span></td>
+            <td><input style="max-width: 160px" type="text" class="icc_id" value="{{ item.icc_id }}"></td>
+            <td><input style="max-width: 80px" type="text" class="remark" value="{{ item.remark }}"></td>
+            <td><span style="max-width: 80px">{{ item.update|date:'Y-m-d H:i:s' }}</span></td>
+            <td>
+                <span style="min-width: 200px">
+                    <button class="btn btn-primary" onclick="queryNet({{ item.pk }},true)">查询</button>
+                    <button class="btn btn-default" onclick="save({{ item.pk }})">保存</button>
+                    <button class="btn btn-danger" onclick="del({{ item.pk }})">删除</button>
+                </span>
             </td>
         </tr>
     {% endfor %}

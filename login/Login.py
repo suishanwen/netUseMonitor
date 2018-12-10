@@ -140,7 +140,7 @@ class Login:
         total = info["total"]
         surplus = info["Surplus"]
         used = info["used"]
-        net = '套餐流量：%s %s，剩余流量：%s %s, 已使用：%s %s' % (
+        net = '套餐：%s %s，剩余：%s %s, 已用：%s %s' % (
             total["value"], total["unit"],
             surplus["value"], surplus["unit"],
             used["value"], used["unit"]
