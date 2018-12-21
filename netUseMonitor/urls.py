@@ -29,4 +29,5 @@ urlpatterns = [
     path('queryNet/', view.queryNet),
     path('emptyNetAll/', view.emptyNetAll),
     path('loadInfo/', view.loadInfo),
+    path('voteInfo/', view.voteInfo),
 ]

@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-
 from telecom.models import Card
 from login.Login import login, dxPwdEncrypt
+import requests
+import time
+from bs4 import BeautifulSoup
 
 
 def hello(request):
@@ -128,8 +130,71 @@ def loadInfo(request):
     card = Card.objects.get(pk=pk)
     return HttpResponse("%s" % card.net)
 
+
 # 数据库操作
 def emptyNetAll(request):
     user = request.POST['user']
     Card.objects.filter(user=user).update(net='')
     return HttpResponse("%s已清空" % user)
+
+
+def find_last(string, str):
+    last_position = -1
+    while True:
+        position = string.find(str, last_position + 1)
+        if position == -1:
+            return last_position
+        last_position = position
+
+
+class VoteProject(object):
+    def __init__(self):
+        self.projectName = ""
+        self.price = 0
+        self.totalRequire = 0
+        self.finishQuantity = 0
+        self.remains = 0
+        self.backgroundNo = ""
+        self.backgroundAddress = ""
+        self.downloadAddress = ""
+        self.idType = ""
+        self.hot = 0
+        self.refreshDate = ""
+
+
+# 数据库操作
+def voteInfo(request):
+    req = requests.session()
+    req.cookies.clear()
+    try:
+        html = req.get("http://butingzhuan.com/tasks.php?t=" + str(time.time()), allow_redirects=False,
+                       timeout=10).content
+    except requests.Timeout:
+        return HttpResponse("%s" % "timeout")
+    result = str(html, 'gbk')
+    result = result[result.index("时间</td>"):]
+    result = result[0:result.index("qzd_yj")]
+    result = result[result.index("<tr class='blank'>"):]
+    result = result[0:find_last(result, "<tr class='blank'>")]
+    soup = BeautifulSoup(result, 'html.parser')
+    trs = soup.find_all("tr")
+    vote_projects = []
+    for tr in trs:
+        if str(tr).find("不换") != -1:
+            continue
+        vote_project = VoteProject()
+        tds = tr.find_all("td")
+        vote_project.projectName = tds[2].find("a").string
+        vote_project.hot = tds[3].text.replace("(", "").replace(")", "")
+        vote_project.price = tds[5].string
+        vote_project.finishQuantity = tds[7]["title"].split("/")[0]
+        total_str = tds[7]["title"].split("/")[1]
+        vote_project.totalRequire = total_str[0:total_str.find(" ")]
+        vote_project.remains = tds[7].string
+        vote_project.backgroundAddress = tds[8].find("a")["href"]
+        vote_project.downloadAddress = tds[9].find("a")["href"]
+        vote_project.idType = tds[10].find("input")["value"].split("-")[0]
+        vote_project.backgroundNo = tds[12].string
+        vote_project.refreshDate = tds[13].string
+        vote_projects.append(vote_project.__dict__)
+    return HttpResponse("%s" % vote_projects)
