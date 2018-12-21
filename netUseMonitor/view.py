@@ -5,8 +5,13 @@ from login.Login import login
 import requests
 import time
 import os
+import sys
+import importlib
 from bs4 import BeautifulSoup
-from django.http import FileResponse
+
+sys.path.append("/etc/nginx/html/file/vote")
+importlib.reload(sys)
+from django.http import StreamingHttpResponse
 
 headers = {
     'Host': 'login.189.cn',
@@ -220,18 +225,10 @@ def download(request):
     req.cookies.clear()
     url = request.GET['url']
     file_name = url[find_last(url, "/") + 1:]
-    path_name = "./dl/" + file_name
+    path_name = "/etc/nginx/html/file/vote/" + file_name
     if not os.path.exists(path_name):
         print("dl from url")
         resp = req.get(url)
         with open(path_name, 'wb') as f:
             f.write(resp.content)
-    else:
-        print("dl from path")
-
-    file = open(path_name, 'rb')
-    response = FileResponse(file)
-    response['Content-Type'] = 'application/octet-stream'
-    response['Content-Disposition'] = 'attachment;filename="' + file_name + '"'
-    return response
-    # return HttpResponse("%s \n %s" % (url, file_name))
+    return "ok"
