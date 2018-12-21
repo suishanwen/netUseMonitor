@@ -1,10 +1,24 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from telecom.models import Card
-from login.Login import login, dxPwdEncrypt
+from login.Login import login
 import requests
 import time
+import os
 from bs4 import BeautifulSoup
+from django.http import FileResponse
+
+headers = {
+    'Host': 'login.189.cn',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'zh-CN,zh;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Referer': 'http://login.189.cn/login',
+    'Cookie': ''
+}
 
 
 def hello(request):
@@ -162,7 +176,7 @@ class VoteProject(object):
         self.refreshDate = ""
 
 
-# 数据库操作
+# 投票数据获取
 def voteInfo(request):
     req = requests.session()
     req.cookies.clear()
@@ -198,3 +212,26 @@ def voteInfo(request):
         vote_project.refreshDate = tds[13].string
         vote_projects.append(vote_project.__dict__)
     return HttpResponse("%s" % vote_projects)
+
+
+# 投票数据获取
+def download(request):
+    req = requests.session()
+    req.cookies.clear()
+    url = request.GET['url']
+    file_name = url[find_last(url, "/") + 1:]
+    path_name = "./dl/" + file_name
+    if not os.path.exists(path_name):
+        print("dl from url")
+        resp = req.get(url)
+        with open(path_name, 'wb') as f:
+            f.write(resp.content)
+    else:
+        print("dl from path")
+
+    file = open(path_name, 'rb')
+    response = FileResponse(file)
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename="' + file_name + '"'
+    return response
+    # return HttpResponse("%s \n %s" % (url, file_name))

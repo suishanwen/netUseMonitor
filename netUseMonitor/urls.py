@@ -30,4 +30,5 @@ urlpatterns = [
     path('emptyNetAll/', view.emptyNetAll),
     path('loadInfo/', view.loadInfo),
     path('voteInfo/', view.voteInfo),
+    path('download/', view.download),
 ]
