@@ -5,13 +5,7 @@ from login.Login import login
 import requests
 import time
 import os
-import sys
-import importlib
 from bs4 import BeautifulSoup
-
-sys.path.append("/etc/nginx/html/file/vote")
-importlib.reload(sys)
-from django.http import StreamingHttpResponse
 
 headers = {
     'Host': 'login.189.cn',
@@ -231,4 +225,4 @@ def download(request):
         resp = req.get(url)
         with open(path_name, 'wb') as f:
             f.write(resp.content)
-    return "ok"
+    return HttpResponse("ok")
