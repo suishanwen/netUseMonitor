@@ -225,7 +225,7 @@ def download(request):
     req.cookies.clear()
     url = request.GET['url']
     file_name = url[find_last(url, "/") + 1:]
-    path_name = "/etc/nginx/html/file/vote/" + file_name
+    path_name = "./dl/" + file_name
     if not os.path.exists(path_name):
         print("dl from url")
         resp = req.get(url)
