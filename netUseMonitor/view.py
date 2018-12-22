@@ -216,7 +216,7 @@ def get_votes():
 def voteInfo(request):
     votes = Votes.objects.get(pk=1)
     now = int(time.time())
-    if now - votes.time > 30 or votes.info == "timeout":
+    if now - votes.time > 15 or votes.info == "timeout":
         votes.info = get_votes()
         votes.time = int(time.time())
     votes.save()
