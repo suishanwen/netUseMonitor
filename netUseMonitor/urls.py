@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic.base import RedirectView
+
 from . import view
 
 urlpatterns = [
@@ -31,4 +33,5 @@ urlpatterns = [
     path('loadInfo/', view.loadInfo),
     path('voteInfo/', view.voteInfo),
     path('download/', view.download),
+    path("favicon.ico", RedirectView.as_view(url='netUseMonitor/favicon.ico')),
 ]
