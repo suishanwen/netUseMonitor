@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from telecom.models import Card
+from telecom.models import Card, Votes
 from login.Login import login
 import requests
 import time
@@ -175,15 +175,14 @@ class VoteProject(object):
         self.refreshDate = ""
 
 
-# 投票数据获取
-def voteInfo(request):
+def get_votes():
     req = requests.session()
     req.cookies.clear()
     try:
         html = req.get("http://butingzhuan.com/tasks.php?t=" + str(time.time()), allow_redirects=False,
                        timeout=10).content
     except requests.Timeout:
-        return HttpResponse("%s" % "timeout")
+        return "timeout"
     result = str(html, 'gbk')
     result = result[result.index("时间</td>"):]
     result = result[0:result.index("qzd_yj")]
@@ -210,7 +209,18 @@ def voteInfo(request):
         vote_project.backgroundNo = tds[12].string
         vote_project.refreshDate = tds[13].string
         vote_projects.append(vote_project.__dict__)
-    return HttpResponse("%s" % vote_projects)
+    return vote_projects
+
+
+# 投票数据获取
+def voteInfo(request):
+    votes = Votes.objects.get(pk=1)
+    now = int(time.time())
+    if now - votes.time > 30 or votes.info == "timeout":
+        votes.info = get_votes()
+        votes.time = int(time.time())
+    votes.save()
+    return HttpResponse("%s" % votes.info)
 
 
 # 投票数据获取

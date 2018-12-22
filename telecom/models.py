@@ -14,3 +14,8 @@ class Card(models.Model):
     remark = models.CharField(max_length=100, default='')
     sort = models.IntegerField(default=None, null=True)
     update = models.DateTimeField(auto_now=True)
+
+
+class Votes(models.Model):
+    info = models.CharField(max_length=10000, default='')
+    time = models.IntegerField(default=None, null=True)
