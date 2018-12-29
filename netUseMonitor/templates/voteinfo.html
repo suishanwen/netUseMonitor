@@ -25,7 +25,7 @@
             <td><span>{{ item.hot }}</span></td>
             <td><span>{{ item.price }}</span></td>
             <td><span>{{ item.remains }}</span></td>
-            <td><span>{{ item.backgroundAddress }}</span></td>
+            <td><a href="{{ item.backgroundAddress }}" target="_blank">{{ item.backgroundAddress }}</a></td>
         </tr>
     {% endfor %}
     </tbody>

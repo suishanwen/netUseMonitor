@@ -5,6 +5,7 @@ from login.Login import login
 import requests
 import time
 import os
+import json
 from bs4 import BeautifulSoup
 
 headers = {
@@ -229,9 +230,9 @@ def list_vote_info(request):
     if now - votes.time > 20 or votes.info == "timeout":
         votes.info = get_votes()
         votes.time = int(time.time())
-    votes.save()
+    else:
+        votes.info = json.loads(votes.info.replace("'", '"'))
     context = {"data": votes.info}
-    print(votes.info)
     return render(request, 'voteinfo.html', context)
 
 
