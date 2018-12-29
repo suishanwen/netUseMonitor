@@ -32,6 +32,7 @@ urlpatterns = [
     path('emptyNetAll/', view.emptyNetAll),
     path('loadInfo/', view.loadInfo),
     path('voteInfo/', view.voteInfo),
+    path('listVoteInfo/', view.list_vote_info),
     path('download/', view.download),
     path('listDownloads/', view.list_downloads),
     path('delDownload/', view.del_download),

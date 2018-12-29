@@ -19,10 +19,10 @@
     </thead>
     <tbody>
     {% for item in data %}
-        <tr>
-            <td class="net"><span style="min-width: 330px">{{ item }}</span></td>
+        <tr style="height: 20px">
+            <td class="net"><span>{{ item }}</span></td>
             <td>
-                <span style="min-width: 200px">
+                <span>
                     <button class="btn btn-danger" onclick="del('{{ item }}')">删除</button>
                 </span>
             </td>

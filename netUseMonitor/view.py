@@ -223,6 +223,18 @@ def voteInfo(request):
     return HttpResponse("%s" % votes.info)
 
 
+def list_vote_info(request):
+    votes = Votes.objects.get(pk=1)
+    now = int(time.time())
+    if now - votes.time > 20 or votes.info == "timeout":
+        votes.info = get_votes()
+        votes.time = int(time.time())
+    votes.save()
+    context = {"data": votes.info}
+    print(votes.info)
+    return render(request, 'voteinfo.html', context)
+
+
 # 投票数据获取
 def download(request):
     req = requests.session()
