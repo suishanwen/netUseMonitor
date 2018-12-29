@@ -174,6 +174,7 @@ class VoteProject(object):
         self.idType = ""
         self.hot = 0
         self.refreshDate = ""
+        self.ip = 1
 
 
 def get_votes():
@@ -193,9 +194,9 @@ def get_votes():
     trs = soup.find_all("tr")
     vote_projects = []
     for tr in trs:
-        if str(tr).find("不换") != -1:
-            continue
         vote_project = VoteProject()
+        if str(tr).find("不换") != -1:
+            vote_project.ip = 0
         tds = tr.find_all("td")
         vote_project.projectName = tds[2].find("a").string
         vote_project.hot = tds[3].text.replace("(", "").replace(")", "")
@@ -210,18 +211,27 @@ def get_votes():
         vote_project.backgroundNo = tds[12].string
         vote_project.refreshDate = tds[13].string
         vote_projects.append(vote_project.__dict__)
-    return vote_projects
+    return json.dumps(vote_projects)
 
 
 # 投票数据获取
 def voteInfo(request):
+    is_adsl = ''
+    if 'isAdsl' in request.GET:
+        is_adsl = request.GET['isAdsl']
     votes = Votes.objects.get(pk=1)
     now = int(time.time())
     if now - votes.time > 20 or votes.info == "timeout":
         votes.info = get_votes()
         votes.time = int(time.time())
-    votes.save()
-    return HttpResponse("%s" % votes.info)
+        votes.save()
+    vote_projects = json.loads(votes.info.replace("'", '"'))
+    vote_projects_filtered = []
+    for project in vote_projects:
+        if project["ip"] == 0 and is_adsl != '1':
+            continue
+        vote_projects_filtered.append(project)
+    return HttpResponse("%s" % vote_projects_filtered)
 
 
 def list_vote_info(request):
