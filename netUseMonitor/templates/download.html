@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/css/bootstrap.min.css">
+    <script src="http://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/js/jquery.slim.min.js"></script>
+    <script src="http://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/js/bootstrap.min.js"></script>
+    <title>下载管理</title>
+</head>
+<body>
+{% include "nav.html" %}
+<button onclick="openDownload()" class="btn btn-primary">下载</button>
+<button onclick="empty()" class="btn btn-danger">清空</button>
+<table class="table table-striped">
+    <thead>
+    <td>文件名</td>
+    <td>操作</td>
+    </thead>
+    <tbody>
+    {% for item in data %}
+        <tr>
+            <td class="net"><span style="min-width: 330px">{{ item }}</span></td>
+            <td>
+                <span style="min-width: 200px">
+                    <button class="btn btn-danger" onclick="del('{{ item }}')">删除</button>
+                </span>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="downloadModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="downloadModalLabel">
+                    下载
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <span>URL:</span>
+                    <span><input style="width: 350px" id="url" type="text" name="url"/></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="download()">下载
+                </button>
+                <button type="button" class="btn btn-default" onclick="closeDownload()">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    loading = false;
+
+    openDownload = () => {
+        $("#url").val("");
+        $('#downloadModal').modal('show');
+    };
+
+    closeDownload = () => {
+        $('#downloadModal').modal('hide');
+    };
+
+    download = () => {
+        if (loading) {
+            alert("正在下载中！");
+            return;
+        }
+        const url = $('#url').val();
+        if (!url) {
+            alert("url不能为空！");
+            return;
+        }
+        loading = true;
+        fetch(`/download?url=${url}`).then((data) => {
+            loading = false;
+            if (data.ok) {
+                window.location.href = "/listDownloads";
+            } else {
+                alert(data.statusText)
+            }
+        });
+
+    };
+
+
+    empty = () => {
+        fetch("/emptyDownloads/").then((data) => {
+            if (data.ok) {
+                window.location.href = "/listDownloads";
+            } else {
+                alert(data.statusText)
+            }
+        });
+    };
+
+
+    del = (item) => {
+        fetch(`/delDownload/?file=${item}`).then((data) => {
+            if (data.ok) {
+                window.location.href = "/listDownloads";
+            } else {
+                alert(data.error())
+            }
+        });
+    };
+
+</script>
+</body>
+</html>

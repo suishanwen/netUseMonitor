@@ -236,3 +236,30 @@ def download(request):
         with open(path_name, 'wb') as f:
             f.write(resp.content)
     return HttpResponse("ok")
+
+
+def list_downloads(request):
+    all_files = []
+    for root, dirs, files in os.walk("./dl/"):
+        if len(files) > 0:
+            for file in files:
+                all_files.append(file)
+    context = {
+        "data": all_files
+    }
+    return render(request, 'download.html', context)
+
+
+def del_download(request):
+    file = request.GET['file']
+    os.remove("./dl/%s" % file)
+    return HttpResponse("ok")
+
+
+def empty_downloads(request):
+    path = "./dl/"
+    for i in os.listdir(path):
+        path_file = os.path.join(path, i)
+        if os.path.isfile(path_file):
+            os.remove(path_file)
+    return HttpResponse("ok")

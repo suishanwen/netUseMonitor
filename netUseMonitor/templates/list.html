@@ -66,7 +66,7 @@
                     window.location.href = "/query?user=" + localStorage.getItem("user");
                 })
             } else {
-                alert(data.error())
+                alert(data.statusText)
             }
         });
     };
@@ -90,6 +90,7 @@
 
     queryNet = (pk, refresh, callback) => {
         if (loading[pk]) {
+            alert("正在查询中");
             return false;
         }
         let formData = new FormData();
@@ -114,7 +115,7 @@
                 })
             } else {
                 loading[pk] = false;
-                alert(data.error())
+                alert(data.statusText)
             }
         });
     };
@@ -144,7 +145,7 @@
                     console.log(res);
                 })
             } else {
-                alert(data.error())
+                alert(data.statusText)
             }
         });
     };
@@ -164,7 +165,7 @@
                     console.log(res)
                 })
             } else {
-                alert(data.error())
+                alert(data.statusText)
             }
         });
     };
@@ -176,7 +177,7 @@
                     setNetValue(pk, res);
                 })
             } else {
-                setNetValue(pk, data.error());
+                setNetValue(pk, data.statusText);
             }
         });
     };

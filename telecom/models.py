@@ -17,5 +17,5 @@ class Card(models.Model):
 
 
 class Votes(models.Model):
-    info = models.CharField(max_length=10000, default='')
+    info = models.CharField(max_length=20000, default='')
     time = models.IntegerField(default=None, null=True)
