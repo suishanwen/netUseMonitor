@@ -272,7 +272,7 @@ def list_vote_info(request):
 def is_downloading(url):
     try:
         Download.objects.get(url=url)
-    except Online.DoesNotExist:
+    except Download.DoesNotExist:
         return False
     return True
 
