@@ -25,9 +25,10 @@ def py_download(url, file_path):
         # 显示一下下载了多少
         logger.info("开始下载: %s, 总共：%d ,当前：%d" % (url, total_size, temp_size))
     # 核心部分，这个是请求下载时，从本地文件已经下载过的后面下载
-    headers = {'Range': 'bytes=%d-' % temp_size}
+    # headers = {'Range': 'bytes=%d-' % temp_size}
     # 重新请求网址，加入新的请求头的
-    r = requests.get(url, stream=True, verify=False, headers=headers)
+    # r = requests.get(url, stream=True, verify=False, headers=headers)
+    r = requests.get(url, stream=True, verify=False)
     # 下面写入文件也要注意，看到"ab"了吗？
     # "ab"表示追加形式写入文件
     with open(file_path, "ab") as f:
