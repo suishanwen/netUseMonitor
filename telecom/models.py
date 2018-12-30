@@ -22,5 +22,8 @@ class Votes(models.Model):
 
 
 class Online(models.Model):
-    identity = models.TextField(max_length=32, default='')
+    identity = models.CharField(max_length=32, default='')
     update = models.DateTimeField(auto_now=True)
+
+class Download(models.Model):
+    url = models.CharField(max_length=100)

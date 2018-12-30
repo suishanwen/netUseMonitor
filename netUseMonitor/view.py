@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from telecom.models import Card, Votes, Online
+from telecom.models import Card, Votes, Online, Download
 from login.Login import login
 import requests
 import time
@@ -269,6 +269,14 @@ def list_vote_info(request):
     return render(request, 'voteinfo.html', context)
 
 
+def is_downloading(url):
+    try:
+        Download.objects.get(url=url)
+    except Online.DoesNotExist:
+        return False
+    return True
+
+
 # 投票数据获取
 def download(request):
     req = requests.session()
@@ -276,12 +284,11 @@ def download(request):
     url = request.GET['url']
     file_name = url[find_last(url, "/") + 1:]
     path_name = "./dl/" + file_name
+    while is_downloading(url):
+        time.sleep(1000)
+    Download(url=url).save()
     py_download(url, path_name)
-    # if not os.path.exists(path_name):
-    #     logger.info("dl from url")
-    #     resp = req.get(url)
-    #     with open(path_name, 'wb') as f:
-    #         f.write(resp.content)
+    Download.objects.get(url=url).delete()
     return HttpResponse("ok")
 
 
