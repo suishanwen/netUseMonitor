@@ -6,7 +6,8 @@
     <script src="http://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/js/jquery.slim.min.js"></script>
 </head>
 <body>
-<div id="log-container" style="height: 450px; overflow-y: scroll; background: #333; color: #aaa; padding: 10px;">
+{% include "nav.html" %}
+<div id="log-container" style="overflow-y:scroll">
     <div>
     </div>
 </div>
@@ -14,12 +15,18 @@
 <script>
     $(document).ready(function () {
         // 指定websocket路径
-        var websocket = new WebSocket('ws://bitcoinrobot.cn:9090');
+        var websocket = new WebSocket("ws://bitcoinrobot.cn:9090/");
         websocket.onmessage = function (event) {
             // 接收服务端的实时日志并添加到HTML页面中
-            $("#log-container div").append(event.data);
+            $("#log-container div").prepend(`<p>${event.data}</p>`);
             // 滚动条滚动到最低部
             $("#log-container").scrollTop($("#log-container div").height() - $("#log-container").height());
+        };
+        websocket.onopen = function (event) {
+
+        };
+        websocket.onclose = function (event) {
+            alert("连接已关闭！")
         };
     });
 </script>
