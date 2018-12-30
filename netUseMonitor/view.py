@@ -264,7 +264,12 @@ def list_vote_info(request):
         votes.info = get_votes()
         votes.time = int(time.time())
     else:
-        votes.info = json.loads(votes.info)
+        try:
+            str = votes.info.replace('None', '')
+            votes.info = demjson.decode(str)
+        except Exception as e:
+            logger.info(e)
+            votes.info = demjson.decode(get_votes())
     context = {"data": votes.info}
     return render(request, 'voteinfo.html', context)
 
