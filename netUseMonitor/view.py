@@ -298,9 +298,13 @@ def download(request):
     url = request.GET['url']
     file_name = url[find_last(url, "/") + 1:]
     path_name = "./dl/" + file_name
+    count = 0
     while is_downloading(url):
+        count += 1
         logger.info("wait downloading!")
         time.sleep(1000)
+        if count > 100:
+            Download.objects.get(url=url).delete()
     try:
         py_download(url, path_name)
     except Exception:
