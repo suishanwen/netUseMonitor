@@ -14,6 +14,9 @@
 </body>
 <script>
     $(document).ready(function () {
+        if ($(window).width() <= 800) {
+            $("#log-container").style.width = $(window).width();
+        }
         // 指定websocket路径
         var websocket = new WebSocket("ws://bitcoinrobot.cn:9090/");
         websocket.onmessage = function (event) {
