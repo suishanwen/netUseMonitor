@@ -286,9 +286,7 @@ def download(request):
     path_name = "./dl/" + file_name
     while is_downloading(url):
         time.sleep(1000)
-    Download(url=url).save()
     py_download(url, path_name)
-    Download.objects.get(url=url).delete()
     return HttpResponse("ok")
 
 
