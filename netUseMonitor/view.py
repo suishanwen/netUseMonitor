@@ -9,8 +9,7 @@ import json
 import demjson
 import logging
 from bs4 import BeautifulSoup
-
-logger = logging.getLogger('default')
+logger = logging.getLogger('django')
 
 headers = {
     'Host': 'login.189.cn',
@@ -182,6 +181,7 @@ class VoteProject(object):
 
 
 def get_votes():
+    logger.info("request from url")
     req = requests.session()
     req.cookies.clear()
     try:
