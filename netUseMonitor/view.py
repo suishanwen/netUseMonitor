@@ -269,6 +269,10 @@ def list_vote_info(request):
     return render(request, 'voteinfo.html', context)
 
 
+def list_online(request):
+    context = {"data": Online.objects.all().order_by("update").reverse()}
+    return render(request, 'online.html', context)
+
 def is_downloading(url):
     try:
         Download.objects.get(url=url)
