@@ -7,16 +7,26 @@
 </head>
 <body>
 {% include "nav.html" %}
-<div id="log-container" style="overflow-y:scroll;margin: 0 auto;text-align: left;width: 800px">
+<div id="log-container" style="overflow-y:scroll;margin: 0 auto;text-align: left;">
     <div>
     </div>
 </div>
 </body>
+<style>
+    @media screen and (min-width: 800px) {
+        #log-container {
+            width: 800px
+        }
+    }
+
+    @media screen and (max-width: 799px) {
+        #log-container {
+            width: 100%
+        }
+    }
+</style>
 <script>
     $(document).ready(function () {
-        if (document.body.clientWidth <= 800) {
-            $("#log-container").style.width = document.body.clientWidth;
-        }
         // 指定websocket路径
         var websocket = new WebSocket("ws://bitcoinrobot.cn:9090/");
         websocket.onmessage = function (event) {
