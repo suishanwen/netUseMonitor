@@ -9,6 +9,8 @@ import json
 import demjson
 import logging
 from bs4 import BeautifulSoup
+from util.download import py_download
+
 logger = logging.getLogger('django')
 
 headers = {
@@ -252,7 +254,7 @@ def list_vote_info(request):
         votes.info = get_votes()
         votes.time = int(time.time())
     else:
-        votes.info = json.loads(votes.info.replace("'", '"'))
+        votes.info = json.loads(votes.info)
     context = {"data": votes.info}
     return render(request, 'voteinfo.html', context)
 
@@ -264,11 +266,12 @@ def download(request):
     url = request.GET['url']
     file_name = url[find_last(url, "/") + 1:]
     path_name = "./dl/" + file_name
-    if not os.path.exists(path_name):
-        logger.info("dl from url")
-        resp = req.get(url)
-        with open(path_name, 'wb') as f:
-            f.write(resp.content)
+    py_download(url, path_name)
+    # if not os.path.exists(path_name):
+    #     logger.info("dl from url")
+    #     resp = req.get(url)
+    #     with open(path_name, 'wb') as f:
+    #         f.write(resp.content)
     return HttpResponse("ok")
 
 
