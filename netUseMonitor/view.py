@@ -301,7 +301,10 @@ def download(request):
     while is_downloading(url):
         logger.info("wait downloading!")
         time.sleep(1000)
-    py_download(url, path_name)
+    try:
+        py_download(url, path_name)
+    except Exception:
+        return HttpResponse("err")
     return HttpResponse("ok")
 
 

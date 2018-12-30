@@ -26,4 +26,4 @@ class Online(models.Model):
     update = models.DateTimeField(auto_now=True)
 
 class Download(models.Model):
-    url = models.CharField(max_length=100)
+    url = models.CharField(max_length=100,unique=True)
