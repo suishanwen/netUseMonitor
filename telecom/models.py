@@ -19,3 +19,8 @@ class Card(models.Model):
 class Votes(models.Model):
     info = models.TextField(max_length=50000, default='')
     time = models.IntegerField(default=None, null=True)
+
+
+class Online(models.Model):
+    identity = models.TextField(max_length=32, default='')
+    update = models.DateTimeField(auto_now=True)

@@ -25,7 +25,7 @@ def py_download(url, file_path):
         GMT_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
         modified_file = fileInfo['LastModified']
         modified_url = int(time.mktime(time.strptime(r1.headers['Last-Modified'], GMT_FORMAT))) + 8 * 3600
-        if modified_url >= modified_file:
+        if modified_url >= modified_file or temp_size > total_size:
             os.remove(file_path)
             logger.info("重新下载:url:%s local:%s" % (time.ctime(modified_url), time.ctime(modified_file)))
             temp_size = 0

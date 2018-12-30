@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from telecom.models import Card, Votes
+from telecom.models import Card, Votes, Online
 from login.Login import login
 import requests
 import time
@@ -222,11 +222,21 @@ def get_votes():
     return demjson.encode(vote_projects)
 
 
+def identity_online(identity):
+    try:
+        online = Online.objects.get(identity=identity)
+        online.save()
+    except Online.DoesNotExist:
+        Online(identity=identity).save()
+
+
 # 投票数据获取
 def voteInfo(request):
     is_adsl = ''
     if 'isAdsl' in request.GET:
         is_adsl = request.GET['isAdsl']
+    if 'id' in request.GET:
+        identity_online(request.GET['id'])
     votes = Votes.objects.get(pk=1)
     now = int(time.time())
     if now - votes.time > 20 or votes.info == "timeout":
