@@ -38,5 +38,6 @@ urlpatterns = [
     path('delDownload/', view.del_download),
     path('emptyDownloads/', view.empty_downloads),
     path('listOnline/', view.list_online),
+    path('log/', view.log),
     path("favicon.ico", RedirectView.as_view(url='netUseMonitor/favicon.ico')),
 ]

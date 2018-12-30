@@ -278,6 +278,11 @@ def list_online(request):
     context = {"data": Online.objects.all().order_by("update").reverse()}
     return render(request, 'online.html', context)
 
+
+def log(request):
+    return render(request, 'log.html')
+
+
 def is_downloading(url):
     try:
         Download.objects.get(url=url)
