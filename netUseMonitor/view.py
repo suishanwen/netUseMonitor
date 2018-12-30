@@ -285,6 +285,7 @@ def download(request):
     file_name = url[find_last(url, "/") + 1:]
     path_name = "./dl/" + file_name
     while is_downloading(url):
+        logger.info("wait downloading!")
         time.sleep(1000)
     py_download(url, path_name)
     return HttpResponse("ok")
