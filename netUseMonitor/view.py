@@ -214,7 +214,7 @@ def get_votes():
         vote_project.totalRequire = total_str[0:total_str.find(" ")]
         vote_project.remains = tds[7].string
         vote_project.backgroundAddress = tds[8].find("a")["href"]
-        vote_project.downloadAddress = tds[9].find("a")["href"]
+        vote_project.downloadAddress = tds[9].find("a")["href"].replace(" ","")
         vote_project.idType = tds[10].find("input")["value"].split("-")[0]
         vote_project.backgroundNo = tds[12].string
         vote_project.refreshDate = tds[13].string
