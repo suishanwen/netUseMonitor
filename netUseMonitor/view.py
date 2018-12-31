@@ -5,12 +5,14 @@ from login.Login import login
 import requests
 import time
 import os
-import json
 import demjson
 import logging
+import configparser
 from bs4 import BeautifulSoup
 from util.download import py_download
 
+config = configparser.ConfigParser()
+config.read("./netUseMonitor/cache.ini")
 logger = logging.getLogger('django')
 
 headers = {
@@ -214,7 +216,7 @@ def get_votes():
         vote_project.totalRequire = total_str[0:total_str.find(" ")]
         vote_project.remains = tds[7].string
         vote_project.backgroundAddress = tds[8].find("a")["href"]
-        vote_project.downloadAddress = tds[9].find("a")["href"].replace(" ","")
+        vote_project.downloadAddress = tds[9].find("a")["href"].replace(" ", "")
         vote_project.idType = tds[10].find("input")["value"].split("-")[0]
         vote_project.backgroundNo = tds[12].string
         vote_project.refreshDate = tds[13].string
@@ -239,10 +241,25 @@ def voteInfo(request):
         identity_online(request.GET['id'])
     votes = Votes.objects.get(pk=1)
     now = int(time.time())
-    if now - votes.time > 20 or votes.info == "timeout":
-        votes.info = get_votes()
-        votes.time = int(time.time())
-        votes.save()
+    if now - votes.time > 15 or votes.info == "timeout":
+        # 是否正在请求
+        count = 0
+        requesting = config.get("voteInfo", "requesting")
+        while requesting == "1":
+            count += 1
+            logger.info("waiting requesting!")
+            time.sleep(1000)
+            requesting = config.get("voteInfo", "requesting")
+            if count > 15:
+                return HttpResponse("timeout")
+        if count > 0:
+            votes = Votes.objects.get(pk=1)
+        else:
+            config.set("voteInfo", "requesting", "1")
+            votes.info = get_votes()
+            votes.time = int(time.time())
+            votes.save()
+            config.set("voteInfo", "requesting", "0")
     try:
         str = votes.info.replace('None', '')
         vote_projects = demjson.decode(str)
@@ -260,7 +277,7 @@ def voteInfo(request):
 def list_vote_info(request):
     votes = Votes.objects.get(pk=1)
     now = int(time.time())
-    if now - votes.time > 20 or votes.info == "timeout":
+    if now - votes.time > 15 or votes.info == "timeout":
         votes.info = get_votes()
         votes.time = int(time.time())
     else:
