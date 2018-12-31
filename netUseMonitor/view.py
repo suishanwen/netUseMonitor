@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.db.models import Q
 from telecom.models import Card, Votes, Online, Download
 from login.Login import login
 import requests
@@ -292,7 +293,21 @@ def list_vote_info(request):
 
 
 def list_online(request):
-    context = {"data": Online.objects.all().order_by("update").reverse()}
+    user = ''
+    if 'user' in request.GET:
+        user = request.GET['user']
+    if user == '':
+        context = {"data": Online.objects.all().order_by("update").reverse()}
+    elif user == 'sw':
+        context = {
+            "data": Online.objects.filter(Q(identity__icontains="AQ-239356") | Q(identity__icontains="Q7-21173"))
+                .order_by("update").reverse()
+        }
+    else:
+        context = {
+            "data": Online.objects.filter(Q(identity__icontains="AQ-14") | Q(identity__icontains="Q7-43"))
+                .order_by("update").reverse()
+        }
     return render(request, 'online.html', context)
 
 
