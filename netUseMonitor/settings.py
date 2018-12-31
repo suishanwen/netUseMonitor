@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # 链接配置换成这个
         'NAME': 'dx',
         'USER': 'root',
-        'PASSWORD': 'q1212456',
+        'PASSWORD': 'root',
         'HOST': 'bitcoinrobot.cn',
         'PORT': '3306',
     }
