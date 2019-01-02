@@ -209,7 +209,7 @@ def get_votes():
             continue
         if str(tr).find("不换") != -1:
             vote_project.ip = 0
-        vote_project.projectName = tds[2].find("a").string.trim()
+        vote_project.projectName = tds[2].find("a").string.replace(" ","")
         vote_project.hot = tds[3].text.replace("(", "").replace(")", "")
         vote_project.price = tds[5].string
         vote_project.finishQuantity = tds[7]["title"].split("/")[0]
