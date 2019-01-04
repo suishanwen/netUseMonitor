@@ -1,3 +1,14 @@
+使用Python3+django构建web服务。
+
+基于tensorflow训练模型自动识别验证码。
+
+文件服务中转，提升下载速度。
+
+通过websocket实时输出日志。
+
+
+
+
 resolve dependencies:
 
 pip3 install requests
@@ -30,7 +41,7 @@ python3 manage.py runserver 0.0.0.0:8000
 
 
 
-running application:
+online application:
 
 http://bitcoinrobot.cn:8000
 
