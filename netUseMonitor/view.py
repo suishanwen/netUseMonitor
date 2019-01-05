@@ -251,7 +251,7 @@ def voteInfo(request):
             logger.info("waiting requesting!")
             time.sleep(1000)
             requesting = config.get("voteInfo", "requesting")
-            if count > 15:
+            if count >= 10:
                 config.set("voteInfo", "requesting", "0")
                 return HttpResponse("timeout")
         if count > 0:
