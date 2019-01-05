@@ -248,7 +248,7 @@ def voteInfo(request):
         requesting = config.get("voteInfo", "requesting")
         while requesting == "1":
             count += 1
-            logger.info("waiting requesting %d!" % count)
+            logger.info("waiting requesting *%d!" % count)
             time.sleep(1000)
             requesting = config.get("voteInfo", "requesting")
             if count >= 10:
