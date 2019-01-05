@@ -249,7 +249,7 @@ def voteInfo(request):
         while requesting == "1":
             count += 1
             logger.info("waiting requesting *%d!" % count)
-            time.sleep(1000)
+            time.sleep(1)
             requesting = config.get("voteInfo", "requesting")
             if count >= 10:
                 config.set("voteInfo", "requesting", "0")
@@ -335,7 +335,7 @@ def download(request):
     while is_downloading(url):
         count += 1
         logger.info("waiting downloading *%d!" % count)
-        time.sleep(1000)
+        time.sleep(1)
         if count > 100:
             Download.objects.get(url=url).delete()
     try:
