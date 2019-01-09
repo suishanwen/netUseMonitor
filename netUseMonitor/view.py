@@ -125,7 +125,6 @@ def delete(request):
     return HttpResponse("删除成功")
 
 
-# 数据库操作
 def query(request):
     user = ''
     if 'user' in request.GET:
@@ -136,6 +135,12 @@ def query(request):
     }
     return render(request, 'list.html', context)
 
+def query_data(request):
+    user = ''
+    if 'user' in request.GET:
+        user = request.GET['user']
+    list = Card.objects.filter(user=user).order_by("sort")
+    return HttpResponse("%s" % list.__dict__)
 
 # 数据库操作
 def queryNet(request):
