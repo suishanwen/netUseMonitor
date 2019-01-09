@@ -140,7 +140,10 @@ def query_data(request):
     if 'user' in request.GET:
         user = request.GET['user']
     list = Card.objects.filter(user=user).order_by("sort")
-    return HttpResponse("%s" % list.__dict__)
+    dict_list = []
+    for card in list:
+        dict_list.append(card.__dict__)
+    return HttpResponse("%s" % dict_list)
 
 # 数据库操作
 def queryNet(request):
