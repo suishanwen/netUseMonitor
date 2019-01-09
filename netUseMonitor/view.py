@@ -147,7 +147,7 @@ def query_data(request):
         del dict["password"]
         dict["update"] = time.mktime(dict["update"].timetuple())
         dict_list.append(dict)
-    return HttpResponse("%s" % dict_list)
+    return HttpResponse("%s" % demjson.encode(dict_list))
 
 # 数据库操作
 def queryNet(request):
