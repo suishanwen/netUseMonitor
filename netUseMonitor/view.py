@@ -142,7 +142,10 @@ def query_data(request):
     list = Card.objects.filter(user=user).order_by("sort")
     dict_list = []
     for card in list:
-        dict_list.append(card.__dict__)
+        dict =  card.__dict__
+        del dict["_state"]
+        del dict["password"]
+        dict_list.append(dict)
     return HttpResponse("%s" % dict_list)
 
 # 数据库操作
