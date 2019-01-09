@@ -145,7 +145,7 @@ def query_data(request):
         dict =  card.__dict__
         del dict["_state"]
         del dict["password"]
-        dict["update"] = time.mktime(dict["update"].timetuple())
+        # dict["update"] = time.mktime(dict["update"].timetuple())
         dict_list.append(dict)
     return HttpResponse("%s" % demjson.encode(dict_list))
 
