@@ -5,11 +5,13 @@ import PyV8
 import time
 import json
 import datetime
+import logging
 from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
 
 basePath = "./login/"
+logger = logging.getLogger('django')
 
 
 class Login:
@@ -106,7 +108,7 @@ class Login:
                 return {"errorCode": "0"}
 
         except:
-            print('电信获取验证码失败！ | [%s] | %s' % (self.phoneNo, traceback.format_exc()))
+            logger.info('电信获取验证码失败！ | [%s] | %s' % (self.phoneNo, traceback.format_exc()))
         finally:
             self.req.close()
 
@@ -128,7 +130,7 @@ class Login:
             return {"errorCode": "0", "token": self.EcsLoginToken}
 
         except:
-            print('登录失败! | [%s] %s' % (self.phoneNo, traceback.format_exc()))
+            logger.info('登录失败! | [%s] %s' % (self.phoneNo, traceback.format_exc()))
             return {"errorCode": "10001", "errorMsg": "系统错误！请联系客服或稍候再试！"}
         finally:
             self.req.close()
@@ -145,7 +147,7 @@ class Login:
             surplus["value"], surplus["unit"],
             used["value"], used["unit"]
         )
-        print(net)
+        logger.info(net)
         return net
 
     def dxCommLogin(self, params):
@@ -185,10 +187,10 @@ class Login:
         r = requests.post(url=url, files=files)
         e = time.time()
         # 识别结果
-        print("接口响应: {}".format(r.text))
+        logger.info("接口响应: {}".format(r.text))
         predict_text = json.loads(r.text)["value"]
         now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print("【{}】 耗时：{}ms 预测结果：{}".format(now_time, int((e - s) * 1000), predict_text))
+        logger.info("【{}】 耗时：{}ms 预测结果：{}".format(now_time, int((e - s) * 1000), predict_text))
         return predict_text
 
 
@@ -230,8 +232,8 @@ def save_file(path, file_name, data):
     file.flush()
     file.close()
 
-def notify_info(card,msg):
-    print(msg)
+def notify_info(card, msg):
+    logger.info(msg)
     card.net = msg
     card.save()
 
@@ -247,7 +249,7 @@ def login(card):
         dx.getCaptcha()
         captcha = dx.image_to_string().replace(" ", "")
         info = "识别验证码为：%s" % captcha
-        notify_info(card,info)
+        notify_info(card, info)
         if len(captcha) != 4 or not captcha.isalnum():
             info = "验证码不规范，重新获取"
             notify_info(card, info)
