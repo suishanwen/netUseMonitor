@@ -7,6 +7,7 @@ import requests
 import time
 import os
 import demjson
+import json
 import logging
 import configparser
 from bs4 import BeautifulSoup
@@ -135,6 +136,7 @@ def query(request):
     }
     return render(request, 'list.html', context)
 
+
 def query_data(request):
     user = ''
     if 'user' in request.GET:
@@ -142,12 +144,13 @@ def query_data(request):
     list = Card.objects.filter(user=user).order_by("sort")
     dict_list = []
     for card in list:
-        dict =  card.__dict__
+        dict = card.__dict__
         del dict["_state"]
         del dict["password"]
         # dict["update"] = time.mktime(dict["update"].timetuple())
         dict_list.append(dict)
     return HttpResponse("%s" % demjson.encode(dict_list))
+
 
 # 数据库操作
 def queryNet(request):
@@ -221,7 +224,7 @@ def get_votes():
             continue
         if str(tr).find("不换") != -1:
             vote_project.ip = 0
-        vote_project.projectName = tds[2].find("a").string.replace(" ","")
+        vote_project.projectName = tds[2].find("a").string.replace(" ", "")
         vote_project.hot = tds[3].text.replace("(", "").replace(")", "")
         vote_project.price = tds[5].string
         vote_project.finishQuantity = tds[7]["title"].split("/")[0]
@@ -303,6 +306,26 @@ def list_vote_info(request):
             votes.info = demjson.decode(get_votes())
     context = {"data": votes.info}
     return render(request, 'voteinfo.html', context)
+
+
+def list_online_data(request):
+    user = ''
+    if 'user' in request.POST:
+        user = request.POST['user']
+    if user == '':
+        list = Online.objects.all().order_by("update").reverse()
+    elif user == 'sw':
+        list = Online.objects.filter(Q(identity__icontains="AQ-239356") | Q(identity__icontains="Q7-21173")).order_by(
+            "update").reverse()
+    else:
+        list = Online.objects.filter(Q(identity__icontains="AQ-14") | Q(identity__icontains="Q7-43")).order_by(
+            "update").reverse()
+    dict_list = []
+    for item in list:
+        dict = item.__dict__
+        del dict["_state"]
+        dict_list.append(dict)
+    return render('%s', demjson.encode(dict_list))
 
 
 def list_online(request):
