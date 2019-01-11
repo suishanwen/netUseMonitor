@@ -324,7 +324,7 @@ def list_online_data(request):
         dict = item.__dict__
         del dict["_state"]
         dict_list.append(dict)
-    return HttpResponse('%s', demjson.encode(dict_list))
+    return HttpResponse('%s' % demjson.encode(dict_list))
 
 
 def list_online(request):
