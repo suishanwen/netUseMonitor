@@ -7,7 +7,6 @@ import requests
 import time
 import os
 import demjson
-import json
 import logging
 import configparser
 from bs4 import BeautifulSoup
@@ -325,7 +324,7 @@ def list_online_data(request):
         dict = item.__dict__
         del dict["_state"]
         dict_list.append(dict)
-    return render('%s', demjson.encode(dict_list))
+    return HttpResponse('%s', demjson.encode(dict_list))
 
 
 def list_online(request):
