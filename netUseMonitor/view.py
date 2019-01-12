@@ -239,12 +239,13 @@ def get_votes():
     return demjson.encode(vote_projects)
 
 
-def identity_online(identity):
+def identity_online(identity, arr_drop):
     try:
         online = Online.objects.get(identity=identity)
+        online.arrDrop = arr_drop
         online.save()
     except Online.DoesNotExist:
-        Online(identity=identity).save()
+        Online(identity=identity, arrDrop=arr_drop).save()
 
 
 # 投票数据获取
@@ -253,7 +254,10 @@ def voteInfo(request):
     if 'isAdsl' in request.GET:
         is_adsl = request.GET['isAdsl']
     if 'id' in request.GET:
-        identity_online(request.GET['id'])
+        arr_drop = ''
+        if 'arrDrop' in request.GET:
+            arr_drop = request.GET['arrDrop']
+        identity_online(request.GET['id'], arr_drop)
     votes = Votes.objects.get(pk=1)
     now = int(time.time())
     if now - votes.time > 15 or votes.info == "timeout":
