@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,11 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'telecom',
-    'django_crontab',
 ]
 
 CRONJOBS = [
-    ('1 */10 * * *', 'netUseMonitor.job.clean',
+    ('*/1 * * * *', 'netUseMonitor.job.clean',
      '>> ' + BASE_DIR + '/job.log'),
 ]
 
