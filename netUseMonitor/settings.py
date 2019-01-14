@@ -36,6 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'telecom',
+    'django_crontab',
+]
+
+CRONJOBS = [
+    ('*/2 * * * *', 'netUseMonitor.job.clean',
+     '>> ' + BASE_DIR + '/job.log'),
 ]
 
 MIDDLEWARE = [
@@ -113,9 +119,9 @@ LOGGING = {
         },
     },
     'handlers': {
-        'console':{
-            'level':'INFO',
-            'class':'logging.StreamHandler',
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
         'file': {
@@ -127,7 +133,7 @@ LOGGING = {
         'email': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
-            'include_html' : True,
+            'include_html': True,
         }
     },
     'loggers': {

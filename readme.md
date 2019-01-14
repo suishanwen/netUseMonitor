@@ -23,11 +23,19 @@ pip3 install pymysql
 
 brew install pytesseract or apt install pytesseract-ocr
 
+ pip3 install django-crontab
+
 --add pyv8-p3 to python3 site-packages
 
 
 
 get started:
+
+python3 manage.py crontab add
+
+python3 manage.py crontab show
+
+python3 manage.py crontab remove
 
 python3 manage.py migrate
 
@@ -38,7 +46,6 @@ python3 manage.py migrate telecom
 python3 manage.py createsuperuser
 
 python3 manage.py runserver 0.0.0.0:8000
-
 
 
 online application:
