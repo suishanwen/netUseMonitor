@@ -7,6 +7,6 @@ logger = logging.getLogger('django')
 
 def clean():
     now = datetime.now()
-    min_ago_15 = now - timedelta(minutes=15)
-    Online.objects.filter(update__lt=min_ago_15).delete()
+    min_ago_5 = now - timedelta(minutes=5)
+    Online.objects.filter(update__lt=min_ago_5).delete()
     logger.info("delete inactive")

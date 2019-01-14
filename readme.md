@@ -23,7 +23,7 @@ pip3 install pymysql
 
 brew install pytesseract or apt install pytesseract-ocr
 
- pip3 install django-crontab
+pip3 install django-crontab
 
 --add pyv8-p3 to python3 site-packages
 
