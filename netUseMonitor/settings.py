@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/2 * * * *', 'netUseMonitor.job.clean',
+    ('1 */10 * * *', 'netUseMonitor.job.clean',
      '>> ' + BASE_DIR + '/job.log'),
 ]
 
