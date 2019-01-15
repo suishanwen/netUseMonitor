@@ -137,16 +137,19 @@ class Login:
 
     def getTaocan(self):
         url = 'http://www.189.cn/dqmh/order/getTaoCan.do'
-        ret = self.req.post(url).json()
-        info = ret["obj"]['userresourcequeryfor189home']['commonFlow']
-        total = info["total"]
-        surplus = info["Surplus"]
-        used = info["used"]
-        net = '套餐：%s %s，剩余：%s %s, 已用：%s %s' % (
-            total["value"], total["unit"],
-            surplus["value"], surplus["unit"],
-            used["value"], used["unit"]
-        )
+        try:
+            ret = self.req.post(url).json()
+            info = ret["obj"]['userresourcequeryfor189home']['commonFlow']
+            total = info["total"]
+            surplus = info["Surplus"]
+            used = info["used"]
+            net = '套:%s%s 剩:%s%s 用:%s%s' % (
+                total["value"], total["unit"][0:1],
+                surplus["value"], surplus["unit"][0:1],
+                used["value"], used["unit"][0:1]
+            )
+        except Exception:
+            net = "电信数据异常!"
         logger.info(net)
         return net
 
@@ -231,6 +234,7 @@ def save_file(path, file_name, data):
     file.write(data)
     file.flush()
     file.close()
+
 
 def notify_info(card, msg):
     logger.info(msg)
