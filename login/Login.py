@@ -143,9 +143,9 @@ class Login:
             total = info["total"]
             surplus = info["Surplus"]
             used = info["used"]
-            net = '套:%s%s 剩:%s%s 用:%s%s' % (
-                total["value"], total["unit"][0:1],
+            net = '%s%s(%s%s-%s%s)' % (
                 surplus["value"], surplus["unit"][0:1],
+                total["value"], total["unit"][0:1],
                 used["value"], used["unit"][0:1]
             )
         except Exception:
