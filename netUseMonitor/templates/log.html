@@ -37,7 +37,7 @@
         };
         websocket.onopen = function (event) {
             setInterval(()=>{
-                websocket.send("pong");
+                websocket.send('{"pong":"1"}');
             },1000)
         };
         websocket.onclose = function (event) {
