@@ -36,7 +36,9 @@
             $("#log-container").scrollTop($("#log-container div").height() - $("#log-container").height());
         };
         websocket.onopen = function (event) {
-
+            setInterval(()=>{
+                websocket.send("pong");
+            },1000)
         };
         websocket.onclose = function (event) {
             alert("连接已关闭！")
