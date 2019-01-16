@@ -108,7 +108,7 @@ class Login:
                 return {"errorCode": "0"}
 
         except:
-            logger.info('电信获取验证码失败！ | [%s] | %s' % (self.phoneNo, traceback.format_exc()))
+            log('电信获取验证码失败！ | [%s] | %s' % (self.phoneNo, traceback.format_exc()))
         finally:
             self.req.close()
 
@@ -130,7 +130,7 @@ class Login:
             return {"errorCode": "0", "token": self.EcsLoginToken}
 
         except:
-            logger.info('登录失败! | [%s] %s' % (self.phoneNo, traceback.format_exc()))
+            log('登录失败! | [%s] %s' % (self.phoneNo, traceback.format_exc()))
             return {"errorCode": "10001", "errorMsg": "系统错误！请联系客服或稍候再试！"}
         finally:
             self.req.close()
@@ -150,7 +150,7 @@ class Login:
             )
         except Exception:
             net = "电信数据异常!"
-        logger.info(net)
+        log(net)
         return net
 
     def dxCommLogin(self, params):
@@ -183,6 +183,7 @@ class Login:
         imgByteArr = BytesIO()
         image.save(imgByteArr, format='PNG')
         # 识别
+        log("调用tensorflow模型识别接口")
         s = time.time()
         url = "http://127.0.0.1:6000/b"
         image_file_name = 'captcha.{}'.format("png")
@@ -190,10 +191,10 @@ class Login:
         r = requests.post(url=url, files=files)
         e = time.time()
         # 识别结果
-        logger.info("接口响应: {}".format(r.text))
+        log("接口响应: {}".format(r.text))
         predict_text = json.loads(r.text)["value"]
         now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        logger.info("【{}】 耗时：{}ms 预测结果：{}".format(now_time, int((e - s) * 1000), predict_text))
+        log("【{}】 耗时：{}ms 预测结果：{}".format(now_time, int((e - s) * 1000), predict_text))
         return predict_text
 
 
@@ -236,10 +237,8 @@ def save_file(path, file_name, data):
     file.close()
 
 
-def notify_info(card, msg):
-    logger.info("[tel]%s" % msg)
-    # card.net = msg
-    # card.save()
+def log(msg):
+    logger.info("[Tel]%s" % msg)
 
 
 def login(card):
@@ -252,25 +251,21 @@ def login(card):
     while errorCode == '20014':
         dx.getCaptcha()
         captcha = dx.image_to_string().replace(" ", "")
-        info = "识别验证码为：%s" % captcha
-        notify_info(card, info)
+        log("识别验证码为：%s" % captcha)
         if len(captcha) != 4 or not captcha.isalnum():
-            info = "验证码不规范，重新获取"
-            notify_info(card, info)
+            log("识别验证码不规范，重新获取")
             continue
         # captcha = input("请输入验证码：")
         count += 1
-        info = "尝试第%d次登陆" % count
-        notify_info(card, info)
+        log("尝试第%d次登陆" % count)
         res = dx.login(captcha, '')
         errorCode = res['errorCode']
         if errorCode != '0':
             errorMsg = res['errorMsg']
-            notify_info(card, errorMsg)
+            log(errorMsg)
 
     if errorCode == '0':
-        info = "%s登陆成功" % dx.phoneNo
-        notify_info(card, info)
+        log("%s登陆成功" % dx.phoneNo)
         return dx.getTaocan()
     else:
         return errorMsg
