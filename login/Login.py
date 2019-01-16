@@ -191,10 +191,11 @@ class Login:
         r = requests.post(url=url, files=files)
         e = time.time()
         # 识别结果
-        log("接口响应: {}".format(r.text))
+        # log("接口响应: {}".format(r.text))
         predict_text = json.loads(r.text)["value"]
         now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log("【{}】 耗时：{}ms 预测结果：{}".format(now_time, int((e - s) * 1000), predict_text))
+        info = "【{}】 耗时：{}ms 预测结果：{}".format(now_time, int((e - s) * 1000), predict_text)
+        log(info)
         return predict_text
 
 
@@ -251,7 +252,7 @@ def login(card):
     while errorCode == '20014':
         dx.getCaptcha()
         captcha = dx.image_to_string().replace(" ", "")
-        log("识别验证码为：%s" % captcha)
+        log("识别验证码为：" + captcha)
         if len(captcha) != 4 or not captcha.isalnum():
             log("识别验证码不规范，重新获取")
             continue
