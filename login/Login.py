@@ -237,7 +237,7 @@ def save_file(path, file_name, data):
 
 
 def notify_info(card, msg):
-    logger.info(msg)
+    logger.info("[tel]%s" % msg)
     card.net = msg
     card.save()
 
