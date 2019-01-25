@@ -6,6 +6,7 @@ import time
 import json
 import datetime
 import logging
+import random
 from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
@@ -29,29 +30,19 @@ class Login:
             'Accept-Language': 'zh-CN,zh;q=0.8',
             'Accept-Encoding': 'gzip, deflate',
             'Connection': 'keep-alive',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Referer': 'http://login.189.cn/login',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Referer': 'https://login.189.cn/web/login',
             'Cookie': ''
         }
 
     def getCaptcha(self):
         self.req.cookies.clear()
-        url = 'http://login.189.cn/web/login/ajax'
+        url = 'https://login.189.cn/web/login/ajax'
 
         data_1 = {
             'm': 'checkphone',
             'phone': self.phoneNo
         }
-
-        data_2 = {
-            'm': "loadlogincaptcha",
-            'Account': self.phoneNo,
-            'UType': "201",
-            'ProvinceID': "01",
-            'AreaCode': "",
-            'CityNo': ""
-        }
-
         headers = {
             'Accept': 'application/json, text/javascript, */*; q=0.01',
             'Accept-Encoding': 'gzip, deflate',
@@ -59,8 +50,8 @@ class Login:
             'Connection': 'keep-alive',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Host': 'login.189.cn',
-            'Origin': 'http://login.189.cn',
-            'Referer': 'http://login.189.cn/login',
+            'Origin': 'https://login.189.cn',
+            'Referer': 'https://login.189.cn/web/login',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
             'X-Requested-With': 'XMLHttpRequest'
         }
@@ -91,11 +82,12 @@ class Login:
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Host": "login.189.cn",
                     "Upgrade-Insecure-Requests": "1",
-                    "Referer": "http://login.189.cn/login",
+                    "Referer": "https://login.189.cn/login",
                     "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0"
                 }
 
-                url = "http://login.189.cn/captcha?419b8486264447ae8680cb8298af8de6&source=login&width=100&height=37&0.39513306694910844"
+                rnd = str(random.random())
+                url = "https://login.189.cn/captcha?undefined&source=login&width=100&height=37&" + rnd
 
                 resp = self.req.post(url, headers=headers, timeout=10)
                 self.EcsCaptchaKey = resp.cookies.get('EcsCaptchaKey')
@@ -107,7 +99,8 @@ class Login:
             else:
                 return {"errorCode": "0"}
 
-        except:
+        except Exception as e:
+            print(e)
             log('电信获取验证码失败！ | [%s] | %s' % (self.phoneNo, traceback.format_exc()))
         finally:
             self.req.close()
@@ -136,7 +129,7 @@ class Login:
             self.req.close()
 
     def getTaocan(self):
-        url = 'http://www.189.cn/dqmh/order/getTaoCan.do'
+        url = 'https://www.189.cn/dqmh/order/getTaoCan.do'
         try:
             ret = self.req.post(url).json()
             info = ret["obj"]['userresourcequeryfor189home']['commonFlow']
@@ -154,7 +147,7 @@ class Login:
         return net
 
     def dxCommLogin(self, params):
-        url = 'http://login.189.cn/web/login'
+        url = 'https://login.189.cn/web/login'
         resp = self.req.post(url, data=params, allow_redirects=False, timeout=10)
         if resp.status_code == 200:
 
@@ -270,3 +263,11 @@ def login(card):
         return dx.getTaocan()
     else:
         return errorMsg
+
+
+def main():
+    dx = Login('19948715071', '915275')
+    dx.getCaptcha()
+
+
+main()
