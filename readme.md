@@ -15,17 +15,26 @@ pip3 install requests
 
 pip3 install bs4
 
-pip3 install pytesseract
+pip3 install pillow
+
+pip3 install demjson
+
+--pip3 install pytesseract
+
+--brew install pytesseract or apt install pytesseract-ocr
 
 pip3 install mysql-connector
 
 pip3 install pymysql
 
-brew install pytesseract or apt install pytesseract-ocr
+pip3 install django
 
 pip3 install django-crontab
 
---add pyv8-p3 to python3 site-packages
+[add PyV8 to python3 /site-packages/PyV8]:
+
+python3>import os>os.path.dirname(os.__file__)
+
 
 
 
