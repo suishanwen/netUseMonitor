@@ -418,14 +418,16 @@ def get_cookies(request):
                         data={"user": "cengkk@163.com", "email": "", "password": "demo@123%^&"}, allow_redirects=False,
                         timeout=10)
         print(resp.status_code)
-        return HttpResponse({
+        return HttpResponse(demjson.encode({
             "status": 200,
             "host": "10.10.252.58",
             "path": "/",
-            "grafana_user": resp.cookies.get("grafana_user"),
-            "grafana_remember": resp.cookies.get("grafana_remember"),
-            "grafana_sess": resp.cookies.get("grafana_sess")
-        })
+            "cookies": {
+                "grafana_user": resp.cookies.get("grafana_user"),
+                "grafana_remember": resp.cookies.get("grafana_remember"),
+                "grafana_sess": resp.cookies.get("grafana_sess")
+            }
+        }))
     except requests.Timeout:
         print("timeout")
     return HttpResponse({
