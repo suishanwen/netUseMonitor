@@ -420,6 +420,8 @@ def get_cookies(request):
         print(resp.status_code)
         return HttpResponse({
             "status": 200,
+            "host": "10.10.252.58",
+            "path": "/",
             "grafana_user": resp.cookies.get("grafana_user"),
             "grafana_remember": resp.cookies.get("grafana_remember"),
             "grafana_sess": resp.cookies.get("grafana_sess")
