@@ -410,7 +410,7 @@ def empty_downloads(request):
     return HttpResponse("ok")
 
 
-def get_cookies():
+def get_cookies(request):
     req = requests.session()
     req.cookies.clear()
     try:
@@ -418,11 +418,14 @@ def get_cookies():
                         data={"user": "cengkk@163.com", "email": "", "password": "demo@123%^&"}, allow_redirects=False,
                         timeout=10)
         print(resp.status_code)
-        return {
+        return HttpResponse({
+            "status": 200,
             "grafana_user": resp.cookies.get("grafana_user"),
             "grafana_remember": resp.cookies.get("grafana_remember"),
             "grafana_sess": resp.cookies.get("grafana_sess")
-        }
+        })
     except requests.Timeout:
         print("timeout")
-    return {}
+    return HttpResponse({
+        "status": 500,
+    })
