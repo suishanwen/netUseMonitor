@@ -41,5 +41,6 @@ urlpatterns = [
     path('listOnlineData/', view.list_online_data),
     path('listOnline/', view.list_online),
     path('log/', view.log),
+    path('getCookies/', view.get_cookies),
     path("favicon.ico", RedirectView.as_view(url='netUseMonitor/favicon.ico')),
 ]
