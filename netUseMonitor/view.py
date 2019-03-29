@@ -418,7 +418,7 @@ def get_cookies(request):
                         data={"user": "cengkk@163.com", "email": "", "password": "demo@123%^&"}, allow_redirects=False,
                         timeout=10)
         print(resp.status_code)
-        return HttpResponse(demjson.encode({
+        response = HttpResponse(demjson.encode({
             "status": 200,
             "host": "10.10.252.58",
             "path": "/",
@@ -429,7 +429,12 @@ def get_cookies(request):
             }
         }))
     except requests.Timeout:
+        response = HttpResponse({
+            "status": 500,
+        })
         print("timeout")
-    return HttpResponse({
-        "status": 500,
-    })
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Methods"] = "POST,GET,OPTIONS"
+    response["Access-Control-Max-Age"] = 1000
+    response["Access-Control-Allow-Headers"] = "*"
+    return response
