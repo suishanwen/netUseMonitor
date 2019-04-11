@@ -28,7 +28,7 @@
 <script>
     $(document).ready(function () {
         // 指定websocket路径
-        var websocket = new WebSocket("wss://socket.bitcoinrobot.cn");
+        var websocket = new WebSocket("wss://socket.bitcoinrobot.cn/1");
         websocket.onmessage = function (event) {
             // 接收服务端的实时日志并添加到HTML页面中
             $("#log-container div").prepend(`<p>${event.data}</p>`);
