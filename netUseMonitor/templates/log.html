@@ -114,7 +114,7 @@
             var pingTimer = null;
             append("连接socket......");
             // 指定websocket路径
-            websocket = new WebSocket("wss://socket.bitcoinrobot.cn#/1");
+            websocket = new WebSocket("wss://socket.bitcoinrobot.cn/1");
             websocket.onmessage = function (event) {
                 append(event.data)
             };
