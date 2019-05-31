@@ -291,7 +291,7 @@ def voteInfo(request):
         if project["ip"] == 0 and is_adsl != '1':
             continue
         vote_projects_filtered.append(project)
-    return HttpResponse("%s" % vote_projects_filtered)
+    return HttpResponse("%s" % demjson.encode(vote_projects_filtered))
 
 
 def list_vote_info(request):
