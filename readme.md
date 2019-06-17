@@ -1,5 +1,3 @@
-[![HitCount](http://hits.dwyl.io/suishanwen/netUseMonitor.svg)](http://hits.dwyl.io/suishanwen/netUseMonitor)
-
 
 使用Python3+django构建web服务。
 
