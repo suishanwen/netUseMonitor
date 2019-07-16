@@ -30,7 +30,7 @@ pip3 install pymysql
 
 pip3 install django
 
-pip3 install django-crontab
+--pip3 install django-crontab
 
 [add PyV8 to python3 /site-packages/PyV8]:
 

@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'telecom',
 ]
 
-CRONJOBS = [
-    ('*/1 * * * *', 'netUseMonitor.job.clean',
-     '>> ' + BASE_DIR + '/job.log'),
-]
+# CRONJOBS = [
+#     ('*/1 * * * *', 'netUseMonitor.job.clean',
+#      '>> ' + BASE_DIR + '/job.log'),
+# ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
