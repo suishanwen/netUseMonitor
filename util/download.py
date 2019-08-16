@@ -12,9 +12,14 @@ logger = logging.getLogger('django')
 def py_download(url, file_path):
     # 第一次请求是为了得到文件总大小
     r1 = requests.get(url, stream=True, verify=False)
+    exist = os.path.exists(file_path)
+    if r1.status_code == 404:
+        if exist:
+            return
+        else:
+            raise RuntimeError(404)
     total_size = int(r1.headers['Content-Length'])
-    # 这重要了，先看看本地文件下载了多少
-    if os.path.exists(file_path):
+    if exist:
         fileStats = os.stat(file_path)  # 获取文件/目录的状态
         fileInfo = {
             'Size': fileStats[stat.ST_SIZE],  # 获取文件大小
