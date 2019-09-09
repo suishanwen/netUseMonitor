@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Q
+
+from login.Login2 import Login2
 from telecom.models import Card, Votes, Online, Download
 from login.Login import login
 import requests
@@ -438,3 +440,12 @@ def get_cookies(request):
     response["Access-Control-Max-Age"] = 1000
     response["Access-Control-Allow-Headers"] = "*"
     return response
+
+
+def reset(request):
+    host = request.POST['host']
+    username = request.POST['username']
+    password = request.POST['password']
+    instance = request.POST['instance']
+    login2 = Login2(host, username, password, instance)
+    return HttpResponse(login2.reset())

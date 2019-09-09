@@ -42,9 +42,8 @@ class Login2:
             return ""
 
     def console(self, id):
-        url = f'http://{self.host}/vpsadm/selfvpsmodify.asp?id={id}'
-        self.headers['Referer'] = ''
-        self.headers['Content-Type'] = ''
+        url = f'http://{self.host}/user/vpsadm2.asp?id={id}&go=a'
+        self.headers['Referer'] = 'http://263vps.com/user/vpsadm.asp'
         resp = self.req.get(url, timeout=20, headers=self.headers)
         if resp.status_code == 200:
             return 1
@@ -52,17 +51,19 @@ class Login2:
             return 0
 
     def restart(self, id):
-        url = f'http://{self.host}/vpsadm/vpsop.asp?id={id}&op=start'
-        self.headers['Referer'] = ''
-        self.headers['Content-Type'] = ''
+        url = f'http://{self.host}/vpsadm/vpsop.asp?id={id}&op=reset'
+        self.headers['Referer'] = f'http://{self.host}/vpsadm/selfvpsmodify.asp?id={id}'
         resp = self.req.get(url, timeout=20, headers=self.headers)
         if resp.status_code == 200:
             return 1
         else:
             return 0
 
+    def reset(self):
+        if self.login():
+            instance_id = self.get_id()
+            if instance_id and self.console(instance_id):
+                return self.restart(instance_id)
+        return 0
 
-if login2.login():
-    id = login2.get_id()
-    if id:
-        print(login2.console(id))
+
