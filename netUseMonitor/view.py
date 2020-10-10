@@ -370,7 +370,7 @@ def download(request):
     req.cookies.clear()
     url = request.GET['url']
     file_name = url[find_last(url, "/") + 1:]
-    path_name = "./dl/" + file_name
+    path_name = "/etc/nginx/html/file/vote/" + file_name
     count = 0
     while is_downloading(url):
         count += 1
@@ -387,7 +387,7 @@ def download(request):
 
 def list_downloads(request):
     all_files = []
-    for root, dirs, files in os.walk("./dl/"):
+    for root, dirs, files in os.walk("/etc/nginx/html/file/vote/"):
         if len(files) > 0:
             for file in files:
                 all_files.append(file)
@@ -399,12 +399,12 @@ def list_downloads(request):
 
 def del_download(request):
     file = request.GET['file']
-    os.remove("./dl/%s" % file)
+    os.remove("/etc/nginx/html/file/vote/%s" % file)
     return HttpResponse("ok")
 
 
 def empty_downloads(request):
-    path = "./dl/"
+    path = "/etc/nginx/html/file/vote/"
     for i in os.listdir(path):
         path_file = os.path.join(path, i)
         if os.path.isfile(path_file):
