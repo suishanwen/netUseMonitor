@@ -11,8 +11,11 @@ import os
 import demjson
 import logging
 import configparser
+import threading
 from bs4 import BeautifulSoup
 from util.download import py_download
+
+lock = threading.Lock()
 
 config = configparser.ConfigParser()
 config.read("./netUseMonitor/cache.ini")
@@ -357,10 +360,11 @@ def log(request):
 
 
 def is_downloading(url):
-    try:
-        Download.objects.get(url=url)
-    except Download.DoesNotExist:
-        return False
+    with lock:
+        try:
+            Download.objects.get(url=url)
+        except Download.DoesNotExist:
+            return False
     return True
 
 
@@ -376,7 +380,7 @@ def download(request):
         count += 1
         logger.info("waiting downloading *%d!" % count)
         time.sleep(1)
-        if count > 100:
+        if count > 900:
             Download.objects.get(url=url).delete()
     try:
         py_download(url, path_name)
