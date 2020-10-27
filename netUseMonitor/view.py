@@ -380,8 +380,8 @@ def download(request):
         count += 1
         logger.info("waiting downloading *%d!" % count)
         time.sleep(1)
-        if count > 900:
-            Download.objects.get(url=url).delete()
+        if count > 100:
+            return HttpResponse("err")
     try:
         py_download(url, path_name)
     except Exception:
