@@ -360,11 +360,10 @@ def log(request):
 
 
 def is_downloading(url):
-    with lock:
-        try:
-            Download.objects.get(url=url)
-        except Download.DoesNotExist:
-            return False
+    try:
+        Download.objects.get(url=url)
+    except Download.DoesNotExist:
+        return False
     return True
 
 
@@ -383,9 +382,9 @@ def download(request):
         if count > 1000:
             Download.objects.get(url=url).delete()
     with lock:
+        if is_downloading(url):
+            return HttpResponse("err")
         try:
-            if is_downloading(url):
-                return HttpResponse("err")
             py_download(url, path_name)
         except Exception:
             return HttpResponse("err")
