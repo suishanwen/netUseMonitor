@@ -452,8 +452,9 @@ def reset(request):
     host = request.POST['host']
     username = request.POST['username']
     password = request.POST['password']
+    reset_id = request.POST['resetId']
     instance = request.POST['instance']
-    login2 = Login2(host, username, password, instance)
+    login2 = Login2(host, username, password, reset_id, instance)
     return HttpResponse(login2.reset())
 
 
@@ -461,5 +462,5 @@ def track(request):
     host = request.POST['host']
     username = request.POST['username']
     password = request.POST['password']
-    login2 = Login2(host, username, password, "")
+    login2 = Login2(host, username, password, "", "")
     return HttpResponse(login2.track())

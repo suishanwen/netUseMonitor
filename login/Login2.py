@@ -1,17 +1,19 @@
 import json
 import requests
 import logging
+import threading
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger('django')
 
 
 class Login2:
-    def __init__(self, host, username, password, instance):
+    def __init__(self, host, username, password, reset_id, instance):
         self.req = requests.session()
         self.host = host
         self.username = username
         self.password = password
+        self.reset_id = reset_id
         self.instance = instance
         self.headers = {
             'Host': f'{self.host}',
@@ -30,7 +32,7 @@ class Login2:
         url = f'http://{self.host}/user/userlogin.asp'
         self.headers['Referer'] = url
         resp = self.req.post(url, data={'username': self.username, 'password': self.password}, allow_redirects=True,
-                             timeout=20, headers=self.headers)
+                             timeout=30, headers=self.headers)
         return resp.status_code == 200
 
     def get_id(self):
@@ -92,27 +94,85 @@ class Login2:
     def console(self, id):
         url = f'http://{self.host}/user/vpsadm2.asp?id={id}&go=a'
         self.headers['Referer'] = 'http://263vps.com/user/vpsadm.asp'
-        resp = self.req.get(url, timeout=20, headers=self.headers)
+        resp = self.req.get(url, timeout=45, headers=self.headers)
         if resp.status_code == 200:
+            logger.info(f"{id} console opened")
             return 1
         else:
+            logger.info(f"{id} console open failed")
             return 0
 
     def restart(self, id):
         url = f'http://{self.host}/vpsadm/vpsop.asp?id={id}&op=reset'
         self.headers['Referer'] = f'http://{self.host}/vpsadm/selfvpsmodify.asp?id={id}'
-        resp = self.req.get(url, timeout=20, headers=self.headers)
+        try:
+            resp = self.req.get(url, timeout=45, headers=self.headers)
+            if resp.status_code == 200:
+                logger.info(f"{id} restart success")
+                return 1
+            else:
+                logger.info(f"{id} restart failed")
+                return 0
+        except Exception as e:
+            logger.info(f"{id} restart failed {str(e)}")
+            return 0
+
+    def batch_console(self):
+        instances = self.instance
+        url = f'http://{self.host}/user/vpsadm_op.asp?allsnme={instances}'
+        self.headers['Referer'] = 'http://263vps.com/user/vpsadm.asp'
+        resp = self.req.post(url, timeout=45, headers=self.headers)
         if resp.status_code == 200:
+            logger.info(f"{instances} batch console opened")
             return 1
         else:
+            logger.info(f"{instances} batch console open failed")
             return 0
+
+    def restart_all(self):
+        instances = self.instance
+        url = f'http://{self.host}/user/vpsadm_op_all.asp?op=reset&allsnme={instances}&Submit2=%C5%FA%C1%BF%D6%B4%D0%D0'
+        instancess = instances.split(",")
+        for i in range(len(instancess)):
+            url += f"&{instancess[i]}"
+        self.headers['Referer'] = 'http://263vps.com/user/vpsadm_op.asp'
+        resp = self.req.post(url, timeout=45, headers=self.headers)
+        if resp.status_code == 200:
+            self.do_vps_op()
+            logger.info(f"{instancess} restart success")
+            return 1
+        else:
+            logger.info(f"{instancess} restart failed")
+            return 0
+
+    def vps_op(self, reset_id):
+        url = f'http://{self.host}/user/dovpsop.asp?op=reset&id={reset_id}'
+        try:
+            self.headers['Referer'] = f'http://{self.host}/user/vpsadm_op_all.asp'
+            resp = self.req.post(url, timeout=120, headers=self.headers)
+            if resp.status_code == 200:
+                logger.info(f"{reset_id} restart success")
+            else:
+                logger.info(f"{reset_id} restart failed")
+        except Exception as e:
+            logger.info(f"{reset_id} restart failed {str(e)}")
+
+    def do_vps_op(self):
+        reset_ids = self.reset_id.split(",")
+        for reset_id in reset_ids:
+            threading.Thread(target=self.vps_op, args=(reset_id,)).start()
 
     def reset(self):
         if self.login():
             logger.info(f"{self.username} login success")
-            instance_id = self.get_id()
-            if instance_id and self.console(instance_id):
-                return self.restart(instance_id)
+            # reset_id = self.get_id()
+            reset_id = self.reset_id
+            if reset_id and reset_id.find(",") != -1:
+                if self.batch_console():
+                    return self.restart_all()
+            else:
+                if reset_id and self.console(reset_id):
+                    return self.restart(reset_id)
         else:
             logger.info(f"{self.username} login failed")
         return 0
