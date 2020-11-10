@@ -75,6 +75,10 @@ class Login2:
                     vm["sortNo"] = sort
                     vm["area"] = tds[1].contents[0]
                     vm["instance"] = tds[2].find("div").contents[0].strip()
+                    text = tds[3].find("div").find("a")['href']
+                    text = text[text.find('?id=') + 4:text.find('?id=') + 14]
+                    text = text[0:text.find('&')]
+                    vm["resetId"] = text
                     vm["remoteIp"] = tds[3].find("div").find("a").contents[0].split("远程IP:")[1].strip()
                     tmp = tds[3].find("div").find("a").contents[6].strip().split("密码")
                     vm["adslUser"] = tmp[0].split("：")[1]
@@ -105,9 +109,12 @@ class Login2:
 
     def reset(self):
         if self.login():
+            logger.info(f"{self.username} login success")
             instance_id = self.get_id()
             if instance_id and self.console(instance_id):
                 return self.restart(instance_id)
+        else:
+            logger.info(f"{self.username} login failed")
         return 0
 
     def track(self):
