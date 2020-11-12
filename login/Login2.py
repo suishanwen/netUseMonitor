@@ -183,7 +183,7 @@ class Login2:
             url = 'https://bitcoinrobot.cn/api/direct/updateExt'
             self.headers['Referer'] = url
             self.headers['Content-Type'] = 'application/json;charset=UTF-8'
-            resp = self.req.post(url, json.dumps(vms), timeout=30, headers=self.headers)
+            resp = self.req.post(url, json.dumps(vms), timeout=150, headers=self.headers)
             logger.info(f"updateExt: {resp.status_code}")
             if resp.status_code == 200:
                 return 1
