@@ -379,7 +379,7 @@ def download(request):
         count += 1
         logger.info("waiting downloading *%d!" % count)
         time.sleep(1)
-        if count > 1000:
+        if count > 300:
             Download.objects.get(url=url).delete()
     with lock:
         if is_downloading(url):
