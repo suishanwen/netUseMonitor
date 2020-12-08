@@ -149,7 +149,7 @@ class Login2:
         url = f'http://{self.host}/user/dovpsop.asp?op=reset&id={reset_id}'
         try:
             self.headers['Referer'] = f'http://{self.host}/user/vpsadm_op_all.asp'
-            resp = self.req.post(url, timeout=120, headers=self.headers)
+            resp = self.req.post(url, timeout=600, headers=self.headers)
             if resp.status_code == 200:
                 logger.info(f"{reset_id} restart success")
             else:
