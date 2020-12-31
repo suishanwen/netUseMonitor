@@ -11,11 +11,10 @@ import os
 import demjson
 import logging
 import configparser
-import threading
 from bs4 import BeautifulSoup
 from util.download import py_download, is_downloading, is_downloaded, download_complete
+import util.locks as locks
 
-lock = threading.Lock()
 config = configparser.ConfigParser()
 config.read("./netUseMonitor/cache.ini")
 logger = logging.getLogger('django')
@@ -383,13 +382,13 @@ def download(request):
             download_complete(url)
     if is_downloaded(url):
         return HttpResponse("ok")
-    with lock:
-        if is_downloading(url):
-            return HttpResponse("err")
-        try:
-            py_download(url, path_name)
-        except Exception:
-            return HttpResponse("err")
+    locks.get(url)
+    try:
+        py_download(url, path_name)
+    except Exception:
+        return HttpResponse("err")
+    finally:
+        locks.release(url)
     return HttpResponse("ok")
 
 

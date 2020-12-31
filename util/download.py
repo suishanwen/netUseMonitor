@@ -3,6 +3,7 @@ import requests
 import os, stat, time
 import logging
 from telecom.models import Download
+import util.locks as locks
 
 # 屏蔽warning信息
 requests.packages.urllib3.disable_warnings()
