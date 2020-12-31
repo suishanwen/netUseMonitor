@@ -377,7 +377,7 @@ def download(request):
     count = 0
     while is_downloading(url):
         count += 1
-        logger.info("waiting downloading %s *%d!" % file_name, count)
+        logger.info("waiting downloading %s *%d!" % (file_name, count))
         time.sleep(1)
         if count > 300:
             download_complete(url)
