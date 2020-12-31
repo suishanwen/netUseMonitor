@@ -17,7 +17,7 @@ def is_downloading(url):
 
 
 def is_downloaded(url):
-    t = downloaded[url]
+    t = downloaded.get(url)
     return t is not None and int(time.time()) - t < 150
 
 
