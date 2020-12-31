@@ -9,13 +9,19 @@ requests.packages.urllib3.disable_warnings()
 logger = logging.getLogger('django')
 
 downloading = {}
+downloaded = {}
 
 
 def is_downloading(url):
     return downloading.get(url) is not None
 
 
-def downloaded(url):
+def is_downloaded(url):
+    t = downloaded[url]
+    return t is not None and int(time.time()) - t < 150
+
+
+def download_complete(url):
     Download.objects.get(url=url).delete()
     downloading.pop(url)
 
@@ -74,5 +80,9 @@ def py_download(url, file_path):
                 sys.stdout.write("\r[%s%s] %d%%" % ('█' * done, ' ' * (50 - done), 100 * temp_size / total_size))
                 sys.stdout.flush()
     logger.info(" %s 下载完成, 总共：%d ,当前：%d" % (url, total_size, temp_size))
-    downloaded(url)
     print()  # 避免上面\r 回车符
+    download_complete(url)
+    downloaded[url] = int(time.time())
+    for key in downloaded.keys():
+        if not is_downloaded(key):
+            downloaded.pop(key)

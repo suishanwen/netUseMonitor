@@ -13,7 +13,7 @@ import logging
 import configparser
 import threading
 from bs4 import BeautifulSoup
-from util.download import py_download, is_downloading, downloaded
+from util.download import py_download, is_downloading, is_downloaded, download_complete
 
 lock = threading.Lock()
 config = configparser.ConfigParser()
@@ -377,10 +377,12 @@ def download(request):
     count = 0
     while is_downloading(url):
         count += 1
-        logger.info("waiting downloading *%d!" % count)
+        logger.info("waiting downloading %s *%d!" % file_name, count)
         time.sleep(1)
         if count > 300:
-            downloaded(url)
+            download_complete(url)
+    if is_downloaded(url):
+        return HttpResponse("ok")
     with lock:
         if is_downloading(url):
             return HttpResponse("err")
