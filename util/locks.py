@@ -16,3 +16,4 @@ def release(url):
     lock = locks.get(url)
     if lock is not None:
         lock.release()
+        locks.pop(url)
