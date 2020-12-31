@@ -8,6 +8,17 @@ from telecom.models import Download
 requests.packages.urllib3.disable_warnings()
 logger = logging.getLogger('django')
 
+downloading = {}
+
+
+def is_downloading(url):
+    return downloading.get(url) is not None
+
+
+def downloaded(url):
+    Download.objects.get(url=url).delete()
+    downloading.pop(url)
+
 
 def py_download(url, file_path):
     # 第一次请求是为了得到文件总大小
@@ -43,6 +54,7 @@ def py_download(url, file_path):
     else:
         # 显示一下下载了多少
         Download(url=url).save()
+        downloading[url] = 1
         logger.info("开始下载: %s, 总共：%d ,当前：%d" % (url, total_size, temp_size))
     # 核心部分，这个是请求下载时，从本地文件已经下载过的后面下载
     headers = {'Range': 'bytes=%d-' % temp_size}
@@ -62,5 +74,5 @@ def py_download(url, file_path):
                 sys.stdout.write("\r[%s%s] %d%%" % ('█' * done, ' ' * (50 - done), 100 * temp_size / total_size))
                 sys.stdout.flush()
     logger.info(" %s 下载完成, 总共：%d ,当前：%d" % (url, total_size, temp_size))
-    Download.objects.get(url=url).delete()
+    downloaded(url)
     print()  # 避免上面\r 回车符

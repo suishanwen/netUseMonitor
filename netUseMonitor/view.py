@@ -13,10 +13,9 @@ import logging
 import configparser
 import threading
 from bs4 import BeautifulSoup
-from util.download import py_download
+from util.download import py_download, is_downloading, downloaded
 
 lock = threading.Lock()
-
 config = configparser.ConfigParser()
 config.read("./netUseMonitor/cache.ini")
 logger = logging.getLogger('django')
@@ -359,12 +358,13 @@ def log(request):
     return render(request, 'log.html')
 
 
-def is_downloading(url):
-    try:
-        Download.objects.get(url=url)
-    except Download.DoesNotExist:
-        return False
-    return True
+#
+# def is_downloading(url):
+#     try:
+#         Download.objects.get(url=url)
+#     except Download.DoesNotExist:
+#         return False
+#     return True
 
 
 # 投票数据获取
@@ -380,7 +380,7 @@ def download(request):
         logger.info("waiting downloading *%d!" % count)
         time.sleep(1)
         if count > 300:
-            Download.objects.get(url=url).delete()
+            downloaded(url)
     with lock:
         if is_downloading(url):
             return HttpResponse("err")
